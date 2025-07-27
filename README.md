@@ -38,17 +38,12 @@ const result = generator
       builder
         .named('useState')
         .named('useEffect')
-        // Mark imports as used
-        .markUsed('useState');
     });
     
     section.addImports('./types', (builder) => {
       builder
         .named('User')
         .named('UserRole')
-        // Mark imports as used
-        .markUsed('User')
-        .markUsed('UserRole');
     });
   })
   .section('User Types', {
@@ -356,9 +351,6 @@ section.addImports('react', (builder) => {
     .named('useState')
     .named('useEffect')
     .named('useContext')
-    // Only useState and useEffect will be included in the output
-    .markUsed('useState')
-    .markUsed('useEffect');
 });
 
 // Default import
@@ -381,17 +373,12 @@ section.addImports('styled-components', (builder) => {
     .default('styled')
     .named('css')
     .named('keyframes')
-    // Only styled and css will be included
-    .markDefaultUsed()
-    .markUsed('css');
 });
 
 // Multiple named imports at once
 section.addImports('./types', (builder) => {
   builder
     .namedMultiple(['User', 'UserRole', 'ApiResponse'])
-    .markUsed('User')
-    .markUsed('UserRole');
 });
 
 // Unused imports (won't appear in output)
@@ -426,8 +413,6 @@ section.addImports('./types', { typeOnly: true }, (builder) => {
   builder
     .named('User')
     .named('UserRole')
-    .markUsed('User')
-    .markUsed('UserRole');
 });
 ```
 
