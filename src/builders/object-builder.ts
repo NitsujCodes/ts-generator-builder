@@ -1,12 +1,12 @@
 /**
  * Object Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { ObjectBuilder, ObjectOptions, ObjectPropertyOptions } from '../types';
 import { 
   createPropertyAssignment,
   createAsConstAssertion
-} from '../ast-utils';
+} from '../utils/ast-utils';
 
 /**
  * Property definition for an object

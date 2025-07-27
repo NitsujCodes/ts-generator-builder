@@ -1,7 +1,7 @@
 /**
  * Section implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type {
   Section as SectionInterface,
   SectionOptions,
@@ -23,7 +23,7 @@ import {
   createTypeAlias,
   createExportModifier,
   printNodes
-} from './ast-utils';
+} from './utils/ast-utils';
 import { TypeUsageTracker } from './utils/type-usage-tracker';
 import { InterfaceBuilderImpl } from './builders/interface-builder';
 import { EnumBuilderImpl } from './builders/enum-builder';

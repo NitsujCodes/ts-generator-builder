@@ -1,10 +1,10 @@
 /**
  * Core Generator implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { Generator as GeneratorInterface, GeneratorConfig, Section, SectionOptions } from './types';
-import { formatTimestamp } from './utils';
-import { createJSDocComment } from './ast-utils';
+import { formatTimestamp } from './utils/utils';
+import { createJSDocComment } from './utils/ast-utils';
 import { SectionImpl } from './section';
 
 /**

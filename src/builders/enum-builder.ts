@@ -1,7 +1,7 @@
 /**
  * Enum Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { EnumBuilder } from '../types';
 import { 
   createEnum, 
@@ -10,7 +10,7 @@ import {
   createExportModifier,
   createConstModifier,
   printNode
-} from '../ast-utils';
+} from '../utils/ast-utils';
 
 /**
  * Enum member definition

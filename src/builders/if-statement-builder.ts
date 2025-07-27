@@ -1,11 +1,11 @@
 /**
  * If Statement Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type {BlockBuilder, IfStatementBuilder} from '../types';
 import {StatementBuilderImpl} from './statement-builder';
 import {BlockBuilderImpl} from './block-builder';
-import {createIfStatement} from '../ast-utils';
+import {createIfStatement} from '../utils/ast-utils';
 
 type ElseIfClause = {
   condition: string;

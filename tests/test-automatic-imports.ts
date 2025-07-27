@@ -5,7 +5,7 @@
  * when types are referenced in the generated code, without needing
  * to manually call markUsed().
  */
-import { createGenerator } from './index';
+import { createGenerator } from '../src';
 
 // Create a generator
 const generator = createGenerator({

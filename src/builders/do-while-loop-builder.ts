@@ -1,10 +1,10 @@
 /**
  * Do-While Loop Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { DoWhileLoopBuilder } from '../types';
 import { LoopBuilderImpl } from './loop-builder';
-import { createDoWhileStatement } from '../ast-utils';
+import { createDoWhileStatement } from '../utils/ast-utils';
 
 /**
  * Implementation of the DoWhileLoopBuilder interface

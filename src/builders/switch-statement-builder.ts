@@ -1,11 +1,11 @@
 /**
  * Switch Statement Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { SwitchStatementBuilder, BlockBuilder } from '../types';
 import { StatementBuilderImpl } from './statement-builder';
 import { BlockBuilderImpl } from './block-builder';
-import { createSwitchStatement, createCaseClause, createDefaultClause } from '../ast-utils';
+import { createSwitchStatement, createCaseClause, createDefaultClause } from '../utils/ast-utils';
 
 /**
  * Implementation of the SwitchStatementBuilder interface

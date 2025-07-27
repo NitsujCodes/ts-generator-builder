@@ -202,7 +202,7 @@ export interface ObjectOptions {
   export?: boolean;
   
   /**
-   * Whether to add 'as const' assertion to the object
+   * Whether to add 'as const' assertion to the object,
    * This makes all properties readonly and narrows literal types
    */
   asConst?: boolean;

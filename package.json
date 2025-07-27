@@ -1,14 +1,45 @@
 {
   "name": "ts-generator-builder",
-  "module": "src/index.ts",
+  "version": "1.0.0",
+  "description": "A TypeScript code generation library with fluent builder API",
+  "keywords": ["typescript", "code-generation", "ast", "builder", "codegen"],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/nitsujcodes/ts-generator-builder#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitsujcodes/ts-generator-builder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nitsujcodes/ts-generator-builder/issues"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "test": "bunx tsx src/test.ts",
-    "build": "bunx tsc ",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "bunx tsx tests/test.ts",
     "start": "bunx tsx ./src/index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "typescript": "^5"
   },
   "peerDependencies": {
     "typescript": "^5"

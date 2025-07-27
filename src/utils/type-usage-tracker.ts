@@ -8,7 +8,7 @@ import * as ts from 'typescript';
  */
 export class TypeUsageTracker {
   private usedIdentifiers = new Set<string>();
-  private instanceId = Math.random().toString(36).substr(2, 9);
+  private instanceId = Math.random().toString(36).substring(2, 9);
 
   constructor() {
     console.log(`TypeUsageTracker instance created: ${this.instanceId}`);
@@ -144,7 +144,7 @@ export class TypeUsageTracker {
       // Skip common JavaScript keywords
       const keyword = match[1];
       if (! keyword) return
-      
+
       if (!['const', 'let', 'var', 'function', 'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'true', 'false', 'null', 'undefined'].includes(keyword)) {
         console.log(`  Found identifier in string: "${keyword}"`);
         this.usedIdentifiers.add(keyword);

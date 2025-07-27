@@ -3,7 +3,7 @@
  * 
  * This module provides functions to create AST nodes using the TypeScript Compiler API
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 
 /**
  * Create a JSDoc comment for a node

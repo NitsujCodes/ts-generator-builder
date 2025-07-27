@@ -1,13 +1,13 @@
 /**
  * Type Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { TypeBuilder } from '../types';
 import { 
   createJSDocComment,
   createExportModifier,
   printNode
-} from '../ast-utils';
+} from '../utils/ast-utils';
 
 /**
  * Type parameter definition

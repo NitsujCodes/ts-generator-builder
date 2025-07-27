@@ -1,7 +1,7 @@
 /**
  * Block Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { BlockBuilder, IfStatementBuilder, SwitchStatementBuilder, ForLoopBuilder, WhileLoopBuilder, DoWhileLoopBuilder } from '../types';
 import { 
   createBlock, 
@@ -9,7 +9,7 @@ import {
   createReturnStatement,
   parseStatement,
   printNode
-} from '../ast-utils';
+} from '../utils/ast-utils';
 import { IfStatementBuilderImpl } from './if-statement-builder';
 import { SwitchStatementBuilderImpl } from './switch-statement-builder';
 import { ForLoopBuilderImpl } from './for-loop-builder';

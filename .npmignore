@@ -1,0 +1,23 @@
+# Source files
+src/
+tests/
+tsconfig.json
+
+# Development files
+.idea/
+.vscode/
+*.log
+.DS_Store
+
+# Build artifacts (keep only dist)
+build/
+
+# Git
+.git/
+.gitignore
+
+# Bun specific
+bun.lock
+
+# Other
+project.md

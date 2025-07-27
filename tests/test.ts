@@ -3,7 +3,7 @@
  * 
  * This file demonstrates the usage of the library with a simple example.
  */
-import { createGenerator } from './index';
+import { createGenerator } from '../src';
 
 // Create a generator with default options
 const generator = createGenerator({

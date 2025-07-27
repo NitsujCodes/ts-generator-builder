@@ -1,7 +1,7 @@
 /**
  * Interface Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { InterfaceBuilder, PropertyOptions } from '../types';
 import { 
   createInterface, 
@@ -10,7 +10,7 @@ import {
   createHeritageClause,
   createExportModifier,
   printNode
-} from '../ast-utils';
+} from '../utils/ast-utils';
 
 /**
  * Property definition for an interface

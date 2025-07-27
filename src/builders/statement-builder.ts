@@ -1,9 +1,9 @@
 /**
  * Statement Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { StatementBuilder } from '../types';
-import { createJSDocComment, printNode } from '../ast-utils';
+import { createJSDocComment, printNode } from '../utils/ast-utils';
 
 /**
  * Implementation of the StatementBuilder interface

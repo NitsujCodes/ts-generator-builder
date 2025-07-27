@@ -1,10 +1,10 @@
 /**
  * While Loop Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { WhileLoopBuilder } from '../types';
 import { LoopBuilderImpl } from './loop-builder';
-import { createWhileStatement } from '../ast-utils';
+import { createWhileStatement } from '../utils/ast-utils';
 
 /**
  * Implementation of the WhileLoopBuilder interface

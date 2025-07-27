@@ -1,9 +1,9 @@
 /**
  * Imports Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type {ImportOptions, ImportsBuilder} from '../types';
-import {printNode} from '../ast-utils';
+import {printNode} from '../utils/ast-utils';
 import {TypeUsageTracker} from '../utils/type-usage-tracker';
 
 /**

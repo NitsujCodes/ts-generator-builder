@@ -1,7 +1,7 @@
 /**
  * Loop Builder implementation
  */
-import ts from 'typescript';
+import * as ts from 'typescript';
 import type { LoopBuilder, BlockBuilder } from '../types';
 import { StatementBuilderImpl } from './statement-builder';
 import { BlockBuilderImpl } from './block-builder';
