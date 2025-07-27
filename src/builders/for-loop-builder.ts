@@ -1,10 +1,10 @@
 /**
  * For Loop Builder implementation
  */
-import * as ts from 'typescript';
-import type { ForLoopBuilder } from '../types';
-import { LoopBuilderImpl } from './loop-builder';
-import { createForStatement } from '../utils/ast-utils';
+import * as ts from "typescript";
+import type { ForLoopBuilder } from "../types";
+import { LoopBuilderImpl } from "./loop-builder";
+import { createForStatement } from "../utils/ast-utils";
 
 /**
  * Implementation of the ForLoopBuilder interface
@@ -16,7 +16,7 @@ export class ForLoopBuilderImpl extends LoopBuilderImpl implements ForLoopBuilde
 
   /**
    * Set the initialization expression for the for loop
-   * 
+   *
    * @param init The initialization expression
    * @returns The builder instance for chaining
    */
@@ -27,7 +27,7 @@ export class ForLoopBuilderImpl extends LoopBuilderImpl implements ForLoopBuilde
 
   /**
    * Set the condition expression for the for loop
-   * 
+   *
    * @param condition The condition expression
    * @returns The builder instance for chaining
    */
@@ -38,7 +38,7 @@ export class ForLoopBuilderImpl extends LoopBuilderImpl implements ForLoopBuilde
 
   /**
    * Set the increment expression for the for loop
-   * 
+   *
    * @param increment The increment expression
    * @returns The builder instance for chaining
    */
@@ -49,7 +49,7 @@ export class ForLoopBuilderImpl extends LoopBuilderImpl implements ForLoopBuilde
 
   /**
    * Generate the AST node for the for loop
-   * 
+   *
    * @returns The for statement node
    */
   override generateNode(): ts.ForStatement {

@@ -1,10 +1,10 @@
 /**
  * Do-While Loop Builder implementation
  */
-import * as ts from 'typescript';
-import type { DoWhileLoopBuilder } from '../types';
-import { LoopBuilderImpl } from './loop-builder';
-import { createDoWhileStatement } from '../utils/ast-utils';
+import * as ts from "typescript";
+import type { DoWhileLoopBuilder } from "../types";
+import { LoopBuilderImpl } from "./loop-builder";
+import { createDoWhileStatement } from "../utils/ast-utils";
 
 /**
  * Implementation of the DoWhileLoopBuilder interface
@@ -14,7 +14,7 @@ export class DoWhileLoopBuilderImpl extends LoopBuilderImpl implements DoWhileLo
 
   /**
    * Set the condition expression for the do-while loop
-   * 
+   *
    * @param condition The condition expression
    * @returns The builder instance for chaining
    */
@@ -25,22 +25,18 @@ export class DoWhileLoopBuilderImpl extends LoopBuilderImpl implements DoWhileLo
 
   /**
    * Generate the AST node for the do-while loop
-   * 
+   *
    * @returns The do-while statement node
    */
   override generateNode(): ts.DoStatement {
     if (!this.conditionExpr) {
-      throw new Error('Condition is required for do-while statement');
+      throw new Error("Condition is required for do-while statement");
     }
 
     // Get the body block
     const bodyBlock = this.getBodyNode();
 
     // Create the do-while statement
-    return createDoWhileStatement(
-      bodyBlock,
-      this.conditionExpr,
-      this.createJSDoc()
-    );
+    return createDoWhileStatement(bodyBlock, this.conditionExpr, this.createJSDoc());
   }
 }

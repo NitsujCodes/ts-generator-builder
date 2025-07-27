@@ -1,7 +1,7 @@
 /**
  * Section implementation
  */
-import * as ts from 'typescript';
+import * as ts from "typescript";
 import type {
   Section as SectionInterface,
   SectionOptions,
@@ -16,31 +16,41 @@ import type {
   WhileLoopBuilder,
   DoWhileLoopBuilder,
   TypeOptions,
-  ObjectOptions
-} from './types';
+  ObjectOptions,
+} from "./types";
 import {
   createJSDocComment,
   createTypeAlias,
   createExportModifier,
-  printNodes
-} from './utils/ast-utils';
-import { TypeUsageTracker } from './utils/type-usage-tracker';
-import { InterfaceBuilderImpl } from './builders/interface-builder';
-import { EnumBuilderImpl } from './builders/enum-builder';
-import { ObjectBuilderImpl } from './builders/object-builder';
-import { ImportsBuilderImpl } from './builders/imports-builder';
-import { TypeBuilderImpl } from './builders/type-builder';
-import { IfStatementBuilderImpl } from './builders/if-statement-builder';
-import { SwitchStatementBuilderImpl } from './builders/switch-statement-builder';
-import { ForLoopBuilderImpl } from './builders/for-loop-builder';
-import { WhileLoopBuilderImpl } from './builders/while-loop-builder';
-import { DoWhileLoopBuilderImpl } from './builders/do-while-loop-builder';
+  printNodes,
+} from "./utils/ast-utils";
+import { TypeUsageTracker } from "./utils/type-usage-tracker";
+import { InterfaceBuilderImpl } from "./builders/interface-builder";
+import { EnumBuilderImpl } from "./builders/enum-builder";
+import { ObjectBuilderImpl } from "./builders/object-builder";
+import { ImportsBuilderImpl } from "./builders/imports-builder";
+import { TypeBuilderImpl } from "./builders/type-builder";
+import { IfStatementBuilderImpl } from "./builders/if-statement-builder";
+import { SwitchStatementBuilderImpl } from "./builders/switch-statement-builder";
+import { ForLoopBuilderImpl } from "./builders/for-loop-builder";
+import { WhileLoopBuilderImpl } from "./builders/while-loop-builder";
+import { DoWhileLoopBuilderImpl } from "./builders/do-while-loop-builder";
 
 /**
  * Represents a code item in a section
  */
 interface CodeItem {
-  type: 'interface' | 'type' | 'enum' | 'object' | 'import' | 'if' | 'switch' | 'for' | 'while' | 'doWhile';
+  type:
+    | "interface"
+    | "type"
+    | "enum"
+    | "object"
+    | "import"
+    | "if"
+    | "switch"
+    | "for"
+    | "while"
+    | "doWhile";
   name: string;
   node: ts.Node | string;
   // Store the ImportsBuilder instance for imports to enable automatic usage detection
@@ -87,17 +97,13 @@ export class SectionImpl implements SectionInterface {
     callback(builder);
 
     // Get the AST node from the builder
-    const node = ts.createSourceFile(
-      'temp.ts',
-      builder.generate(),
-      ts.ScriptTarget.Latest,
-      true
-    ).statements[0] as ts.Statement;
+    const node = ts.createSourceFile("temp.ts", builder.generate(), ts.ScriptTarget.Latest, true)
+      .statements[0] as ts.Statement;
 
     this.items.push({
-      type: 'interface',
+      type: "interface",
       name,
-      node
+      node,
     });
 
     return this;
@@ -111,34 +117,30 @@ export class SectionImpl implements SectionInterface {
    * @param options Configuration options for the type
    * @returns The section instance for chaining
    */
-  addType(name: string, typeOrCallback: string | ((builder: TypeBuilder) => void), options: TypeOptions = {}): SectionInterface {
+  addType(
+    name: string,
+    typeOrCallback: string | ((builder: TypeBuilder) => void),
+    options: TypeOptions = {}
+  ): SectionInterface {
     // Check if the second parameter is a string or a callback function
-    if (typeof typeOrCallback === 'string') {
+    if (typeof typeOrCallback === "string") {
       // Handle the original overload (string type)
       const type = typeOrCallback;
 
       // Create JSDoc comment if provided
-      const jsDoc = options.jsdoc
-        ? createJSDocComment(options.jsdoc)
-        : undefined;
+      const jsDoc = options.jsdoc ? createJSDocComment(options.jsdoc) : undefined;
 
       // Create modifiers if needed
-      const modifiers: ts.Modifier[] = (options.export ?? this.options.exportAll)
-        ? [createExportModifier()]
-        : [];
+      const modifiers: ts.Modifier[] =
+        (options.export ?? this.options.exportAll) ? [createExportModifier()] : [];
 
       // Create the type alias declaration
-      const typeAliasNode = createTypeAlias(
-        name,
-        type,
-        jsDoc,
-        modifiers
-      );
+      const typeAliasNode = createTypeAlias(name, type, jsDoc, modifiers);
 
       this.items.push({
-        type: 'type',
+        type: "type",
         name,
-        node: typeAliasNode
+        node: typeAliasNode,
       });
     } else {
       // Handle the new overload (callback function)
@@ -154,9 +156,9 @@ export class SectionImpl implements SectionInterface {
       const node = builder.generateNode();
 
       this.items.push({
-        type: 'type',
+        type: "type",
         name,
-        node
+        node,
       });
     }
 
@@ -178,9 +180,9 @@ export class SectionImpl implements SectionInterface {
     const node = builder.generateNode();
 
     this.items.push({
-      type: 'enum',
+      type: "enum",
       name,
-      node
+      node,
     });
 
     return this;
@@ -197,22 +199,22 @@ export class SectionImpl implements SectionInterface {
     // Set the export option based on section's exportAll if not explicitly provided
     const mergedOptions: ObjectOptions = {
       ...options,
-      export: options.export ?? this.options.exportAll
+      export: options.export ?? this.options.exportAll,
     };
 
     const builder = new ObjectBuilderImpl(mergedOptions);
     callback(builder);
 
     // Use the provided name or generate a default one
-    const name = options.name || 'anonymousObject';
+    const name = options.name || "anonymousObject";
 
     // Generate the code and store it directly as a string
     const generatedCode = builder.generate();
 
     this.items.push({
-      type: 'object',
+      type: "object",
       name,
-      node: generatedCode
+      node: generatedCode,
     });
 
     return this;
@@ -225,7 +227,10 @@ export class SectionImpl implements SectionInterface {
    * @param callback A callback function to configure the imports
    * @returns The section instance for chaining
    */
-  addImports(moduleSpecifier: string, callback: (builder: ImportsBuilder) => void): SectionInterface {
+  addImports(
+    moduleSpecifier: string,
+    callback: (builder: ImportsBuilder) => void
+  ): SectionInterface {
     // Create a new ImportsBuilder with the module specifier
     const builder = new ImportsBuilderImpl(moduleSpecifier);
     callback(builder);
@@ -233,10 +238,10 @@ export class SectionImpl implements SectionInterface {
     // Store the builder instance instead of generating immediately
     // This allows us to apply automatic usage detection later
     this.items.push({
-      type: 'import',
+      type: "import",
       name: moduleSpecifier, // Use the module specifier as the name
-      node: '', // Placeholder - will be generated later with usage detection
-      importsBuilder: builder
+      node: "", // Placeholder - will be generated later with usage detection
+      importsBuilder: builder,
     });
 
     return this;
@@ -258,9 +263,9 @@ export class SectionImpl implements SectionInterface {
 
     // Add the if statement to the items
     this.items.push({
-      type: 'if',
-      name: 'if', // Use a generic name for if statements
-      node
+      type: "if",
+      name: "if", // Use a generic name for if statements
+      node,
     });
 
     return this;
@@ -282,9 +287,9 @@ export class SectionImpl implements SectionInterface {
 
     // Add the switch statement to the items
     this.items.push({
-      type: 'switch',
-      name: 'switch', // Use a generic name for switch statements
-      node
+      type: "switch",
+      name: "switch", // Use a generic name for switch statements
+      node,
     });
 
     return this;
@@ -306,9 +311,9 @@ export class SectionImpl implements SectionInterface {
 
     // Add the for loop to the items
     this.items.push({
-      type: 'for',
-      name: 'for', // Use a generic name for loops
-      node
+      type: "for",
+      name: "for", // Use a generic name for loops
+      node,
     });
 
     return this;
@@ -330,9 +335,9 @@ export class SectionImpl implements SectionInterface {
 
     // Add the while loop to the items
     this.items.push({
-      type: 'while',
-      name: 'while', // Use a generic name for while loops
-      node
+      type: "while",
+      name: "while", // Use a generic name for while loops
+      node,
     });
 
     return this;
@@ -354,9 +359,9 @@ export class SectionImpl implements SectionInterface {
 
     // Add the do-while loop to the items
     this.items.push({
-      type: 'doWhile',
-      name: 'doWhile', // Use a generic name for do-while loops
-      node
+      type: "doWhile",
+      name: "doWhile", // Use a generic name for do-while loops
+      node,
     });
 
     return this;
@@ -371,8 +376,8 @@ export class SectionImpl implements SectionInterface {
     const { description, metadata, sortItems } = this.options;
 
     // First, separate import items from other items
-    const importItems = this.items.filter(item => item.type === 'import');
-    const nonImportItems = this.items.filter(item => item.type !== 'import');
+    const importItems = this.items.filter((item) => item.type === "import");
+    const nonImportItems = this.items.filter((item) => item.type !== "import");
 
     // Sort non-import items if needed
     const sortedNonImportItems = sortItems
@@ -386,23 +391,18 @@ export class SectionImpl implements SectionInterface {
 
     // IMPORTANT: Scan all non-import items for type usage FIRST
     // This must happen before we process imports to detect what's actually used
-    sortedNonImportItems.forEach(item => {
-      let generatedCode: string
+    sortedNonImportItems.forEach((item) => {
+      let generatedCode: string;
 
-      if (typeof item.node === 'string') {
+      if (typeof item.node === "string") {
         generatedCode = item.node;
       } else {
         // Generate code from AST node
-        const tempSrcFile = ts.createSourceFile(
-            'temp.ts',
-            '',
-            ts.ScriptTarget.Latest,
-            true
-        )
+        const tempSrcFile = ts.createSourceFile("temp.ts", "", ts.ScriptTarget.Latest, true);
 
         const printer = ts.createPrinter({
           newLine: ts.NewLineKind.LineFeed,
-          removeComments: true
+          removeComments: true,
         });
 
         generatedCode = printer.printNode(ts.EmitHint.Unspecified, item.node, tempSrcFile);
@@ -410,12 +410,12 @@ export class SectionImpl implements SectionInterface {
 
       console.log(`Scanning pre-generated code for item: ${item.name}`);
       usageTracker.scanString(generatedCode);
-      preGeneratedItems.push({ item, generatedCode })
+      preGeneratedItems.push({ item, generatedCode });
     });
 
     // NOW apply automatic usage detection to import items and generate their final code
     // This happens after scanning so the usage tracker has all the information
-    importItems.forEach(item => {
+    importItems.forEach((item) => {
       if (item.importsBuilder) {
         console.log(`Processing import item: ${item.name} with complete usage data`);
         // Apply automatic usage detection based on what we found during scanning
@@ -429,14 +429,14 @@ export class SectionImpl implements SectionInterface {
           item.node = generatedCode;
         } else {
           // If no imports are used, mark this item for removal
-          item.node = '';
+          item.node = "";
         }
       }
     });
 
     // Filter out empty import items (where no imports were used)
-    const filteredImportItems = importItems.filter(item =>
-      typeof item.node === 'string' && item.node.trim() !== ''
+    const filteredImportItems = importItems.filter(
+      (item) => typeof item.node === "string" && item.node.trim() !== ""
     );
 
     // Combine items with filtered imports first, then other items
@@ -444,8 +444,8 @@ export class SectionImpl implements SectionInterface {
 
     // Process import items first to ensure they appear at the top
     const importStrings: string[] = [];
-    filteredImportItems.forEach(item => {
-      if (typeof item.node === 'string') {
+    filteredImportItems.forEach((item) => {
+      if (typeof item.node === "string") {
         importStrings.push(item.node);
       }
     });
@@ -456,7 +456,7 @@ export class SectionImpl implements SectionInterface {
 
     // Process non-import items
     preGeneratedItems.forEach(({ item, generatedCode }) => {
-      if (typeof item.node === 'string') {
+      if (typeof item.node === "string") {
         stringNodes.push(generatedCode);
       } else {
         astNodes.push(item.node);
@@ -468,7 +468,7 @@ export class SectionImpl implements SectionInterface {
       // Create section comment
       let result = `/**\n * ${this.name}\n`;
       if (Array.isArray(description)) {
-        description.forEach(line => {
+        description.forEach((line) => {
           result += ` * ${line}\n`;
         });
       } else if (description) {
@@ -478,7 +478,7 @@ export class SectionImpl implements SectionInterface {
       // Add metadata
       if (metadata) {
         if (description) {
-          result += ` *\n`;
+          result += " *\n";
         }
 
         for (const [key, value] of Object.entries(metadata)) {
@@ -488,19 +488,19 @@ export class SectionImpl implements SectionInterface {
         }
       }
 
-      result += ` */\n`;
+      result += " */\n";
 
       // Add import strings first
       if (importStrings.length > 0) {
-        result += importStrings.join('\n');
+        result += importStrings.join("\n");
         if (stringNodes.length > 0) {
-          result += '\n\n';
+          result += "\n\n";
         }
       }
 
       // Add other string nodes
       if (stringNodes.length > 0) {
-        result += stringNodes.join('\n\n');
+        result += stringNodes.join("\n\n");
       }
 
       // Add end comment
@@ -533,7 +533,7 @@ export class SectionImpl implements SectionInterface {
     astNodes.push(endComment);
 
     // Generate code from AST nodes
-    let astCode = '';
+    let astCode = "";
     if (astNodes.length > 0) {
       // Add the section comment to the first AST node if there are AST nodes
       ts.addSyntheticLeadingComment(
@@ -547,25 +547,25 @@ export class SectionImpl implements SectionInterface {
     }
 
     // Combine import strings, other string nodes, and AST code
-    let result = '';
+    let result = "";
 
     // Add import strings first
     if (importStrings.length > 0) {
-      result += importStrings.join('\n');
+      result += importStrings.join("\n");
     }
 
     // Add other string nodes
     if (stringNodes.length > 0) {
       if (result) {
-        result += '\n\n';
+        result += "\n\n";
       }
-      result += stringNodes.join('\n\n');
+      result += stringNodes.join("\n\n");
     }
 
     // Add AST code
     if (astCode) {
       if (result) {
-        result += '\n\n';
+        result += "\n\n";
       }
       result += astCode;
     }

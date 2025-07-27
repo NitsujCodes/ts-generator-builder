@@ -1,6 +1,6 @@
 /**
  * TypeScript Generator Builder
- * 
+ *
  * A fluent API library for generating TypeScript code with organized sections,
  * comprehensive JSDoc support, and metadata tracking.
  */
@@ -15,22 +15,22 @@ export type {
   EnumBuilder,
   PropertyOptions,
   TypeOptions,
-  EnumOptions
-} from './types';
+  EnumOptions,
+} from "./types";
 
 // Import implementations
-import { GeneratorImpl } from './generator';
+import { GeneratorImpl } from "./generator";
 
 /**
  * Create a new TypeScript code generator
- * 
+ *
  * @param config Configuration options for the generator
  * @returns A new Generator instance
- * 
+ *
  * @example
  * ```typescript
  * const generator = createGenerator();
- * 
+ *
  * const result = generator
  *   .section('User Types', {
  *     description: 'Core user interfaces and types',
@@ -45,7 +45,7 @@ import { GeneratorImpl } from './generator';
  *         .property('name', 'string')
  *         .property('email', 'string');
  *     });
- *     
+ *
  *     section.addType('PartialUser', 'Partial<User>');
  *   })
  *   .generate();

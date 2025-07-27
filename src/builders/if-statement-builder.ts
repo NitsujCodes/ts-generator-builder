@@ -1,16 +1,16 @@
 /**
  * If Statement Builder implementation
  */
-import * as ts from 'typescript';
-import type {BlockBuilder, IfStatementBuilder} from '../types';
-import {StatementBuilderImpl} from './statement-builder';
-import {BlockBuilderImpl} from './block-builder';
-import {createIfStatement} from '../utils/ast-utils';
+import * as ts from "typescript";
+import type { BlockBuilder, IfStatementBuilder } from "../types";
+import { StatementBuilderImpl } from "./statement-builder";
+import { BlockBuilderImpl } from "./block-builder";
+import { createIfStatement } from "../utils/ast-utils";
 
 type ElseIfClause = {
   condition: string;
   block: BlockBuilderImpl;
-}
+};
 
 /**
  * Implementation of the IfStatementBuilder interface
@@ -23,7 +23,7 @@ export class IfStatementBuilderImpl extends StatementBuilderImpl implements IfSt
 
   /**
    * Add a condition to the if statement
-   * 
+   *
    * @param condition The condition expression
    * @returns The builder instance for chaining
    */
@@ -34,7 +34,7 @@ export class IfStatementBuilderImpl extends StatementBuilderImpl implements IfSt
 
   /**
    * Add statements to the if block
-   * 
+   *
    * @param callback A callback function to configure the if block
    * @returns The builder instance for chaining
    */
@@ -47,7 +47,7 @@ export class IfStatementBuilderImpl extends StatementBuilderImpl implements IfSt
 
   /**
    * Add an else-if clause to the if statement
-   * 
+   *
    * @param condition The condition expression for the else-if
    * @param callback A callback function to configure the else-if block
    * @returns The builder instance for chaining
@@ -61,7 +61,7 @@ export class IfStatementBuilderImpl extends StatementBuilderImpl implements IfSt
 
   /**
    * Add an else clause to the if statement
-   * 
+   *
    * @param callback A callback function to configure the else block
    * @returns The builder instance for chaining
    */
@@ -74,16 +74,16 @@ export class IfStatementBuilderImpl extends StatementBuilderImpl implements IfSt
 
   /**
    * Generate the AST node for the if statement
-   * 
+   *
    * @returns The if statement node
    */
   override generateNode(): ts.IfStatement {
     if (!this.conditionExpr) {
-      throw new Error('Condition is required for if statement');
+      throw new Error("Condition is required for if statement");
     }
 
     if (!this.thenBlock) {
-      throw new Error('Then block is required for if statement');
+      throw new Error("Then block is required for if statement");
     }
 
     // Create the then statement
@@ -105,11 +105,7 @@ export class IfStatementBuilderImpl extends StatementBuilderImpl implements IfSt
       // Build the chain of else-if statements from the end to the beginning
       for (let i = this.elseIfClauses.length - 1; i >= 0; i--) {
         const { condition, block } = this.elseIfClauses[i] as ElseIfClause;
-        currentElse = createIfStatement(
-            condition,
-            block.generateNode(),
-            currentElse
-        );
+        currentElse = createIfStatement(condition, block.generateNode(), currentElse);
       }
 
       elseStatement = currentElse;
@@ -119,11 +115,6 @@ export class IfStatementBuilderImpl extends StatementBuilderImpl implements IfSt
     }
 
     // Create the if statement
-    return createIfStatement(
-      this.conditionExpr,
-      thenStatement,
-      elseStatement,
-      this.createJSDoc()
-    );
+    return createIfStatement(this.conditionExpr, thenStatement, elseStatement, this.createJSDoc());
   }
 }

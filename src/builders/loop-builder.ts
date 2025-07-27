@@ -1,10 +1,10 @@
 /**
  * Loop Builder implementation
  */
-import * as ts from 'typescript';
-import type { LoopBuilder, BlockBuilder } from '../types';
-import { StatementBuilderImpl } from './statement-builder';
-import { BlockBuilderImpl } from './block-builder';
+import * as ts from "typescript";
+import type { LoopBuilder, BlockBuilder } from "../types";
+import { StatementBuilderImpl } from "./statement-builder";
+import { BlockBuilderImpl } from "./block-builder";
 
 /**
  * Implementation of the LoopBuilder interface
@@ -14,7 +14,7 @@ export abstract class LoopBuilderImpl extends StatementBuilderImpl implements Lo
 
   /**
    * Add statements to the loop body
-   * 
+   *
    * @param callback A callback function to configure the loop body
    * @returns The builder instance for chaining
    */
@@ -27,12 +27,12 @@ export abstract class LoopBuilderImpl extends StatementBuilderImpl implements Lo
 
   /**
    * Get the body block node
-   * 
+   *
    * @returns The body block node
    */
   protected getBodyNode(): ts.Block {
     if (!this.bodyBlock) {
-      throw new Error('Body is required for loop statement');
+      throw new Error("Body is required for loop statement");
     }
     return this.bodyBlock.generateNode();
   }

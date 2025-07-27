@@ -1,13 +1,13 @@
 /**
  * TypeScript AST utilities for code generation
- * 
+ *
  * This module provides functions to create AST nodes using the TypeScript Compiler API
  */
-import * as ts from 'typescript';
+import * as ts from "typescript";
 
 /**
  * Create a JSDoc comment for a node
- * 
+ *
  * @param text The comment text or array of comment lines
  * @param metadata Optional metadata to include in the JSDoc
  * @returns JSDoc comment node
@@ -32,43 +32,40 @@ export function createJSDocComment(
   }
 
   const allLines = [...commentLines];
-  
+
   // Add a blank line before metadata if both comment and metadata exist
   if (commentLines.length > 0 && metadataLines.length > 0) {
-    allLines.push('');
+    allLines.push("");
   }
-  
+
   allLines.push(...metadataLines);
 
   // Create JSDoc tags for metadata
-  const tags: ts.JSDocTag[] = metadataLines.map(line => {
-    const [tagName, ...tagText] = line.substring(1).split(' ');
+  const tags: ts.JSDocTag[] = metadataLines.map((line) => {
+    const [tagName, ...tagText] = line.substring(1).split(" ");
 
     return ts.factory.createJSDocUnknownTag(
       ts.factory.createIdentifier(tagName as string),
-      tagText.join(' ')
+      tagText.join(" ")
     );
   });
 
   // Create the JSDoc comment
-  return ts.factory.createJSDocComment(
-    commentLines.join('\n'),
-    tags
-  );
+  return ts.factory.createJSDocComment(commentLines.join("\n"), tags);
 }
 
 /**
  * Create an empty JSDoc comment
- * 
+ *
  * @returns Empty JSDoc comment node
  */
 export function createEmptyJSDocComment(): ts.JSDoc {
-  return ts.factory.createJSDocComment('', []);
+  return ts.factory.createJSDocComment("", []);
 }
 
 /**
  * Create an interface declaration
- * 
+ *
  * @param name The name of the interface
  * @param members The members of the interface
  * @param heritageClauses Optional heritage clauses (extends)
@@ -105,7 +102,7 @@ export function createInterface(
 
 /**
  * Create a property signature for an interface
- * 
+ *
  * @param name The name of the property
  * @param type The type of the property
  * @param optional Whether the property is optional
@@ -146,7 +143,7 @@ export function createPropertySignature(
 
 /**
  * Create a type alias declaration
- * 
+ *
  * @param name The name of the type
  * @param type The type definition
  * @param jsDoc Optional JSDoc comment
@@ -180,7 +177,7 @@ export function createTypeAlias(
 
 /**
  * Create an enum declaration
- * 
+ *
  * @param name The name of the enum
  * @param members The members of the enum
  * @param jsDoc Optional JSDoc comment
@@ -213,28 +210,23 @@ export function createEnum(
 
 /**
  * Create an enum member
- * 
+ *
  * @param name The name of the enum member
  * @param value The value of the enum member (string or number)
  * @returns Enum member node
  */
-export function createEnumMember(
-  name: string,
-  value: string | number
-): ts.EnumMember {
-  const initializer = typeof value === 'string'
-    ? ts.factory.createStringLiteral(value)
-    : ts.factory.createNumericLiteral(value);
+export function createEnumMember(name: string, value: string | number): ts.EnumMember {
+  const initializer =
+    typeof value === "string"
+      ? ts.factory.createStringLiteral(value)
+      : ts.factory.createNumericLiteral(value);
 
-  return ts.factory.createEnumMember(
-    ts.factory.createIdentifier(name),
-    initializer
-  );
+  return ts.factory.createEnumMember(ts.factory.createIdentifier(name), initializer);
 }
 
 /**
  * Create a heritage clause (extends or implements)
- * 
+ *
  * @param token The token kind (extends or implements)
  * @param types The types to extend or implement
  * @returns Heritage clause node
@@ -245,16 +237,15 @@ export function createHeritageClause(
 ): ts.HeritageClause {
   return ts.factory.createHeritageClause(
     token,
-    types.map(type => ts.factory.createExpressionWithTypeArguments(
-      ts.factory.createIdentifier(type),
-      undefined
-    ))
+    types.map((type) =>
+      ts.factory.createExpressionWithTypeArguments(ts.factory.createIdentifier(type), undefined)
+    )
   );
 }
 
 /**
  * Create an export modifier
- * 
+ *
  * @returns Export modifier
  */
 export function createExportModifier(): ts.Modifier {
@@ -263,7 +254,7 @@ export function createExportModifier(): ts.Modifier {
 
 /**
  * Create a const modifier
- * 
+ *
  * @returns Const modifier
  */
 export function createConstModifier(): ts.Modifier {
@@ -272,7 +263,7 @@ export function createConstModifier(): ts.Modifier {
 
 /**
  * Print a TypeScript node to string
- * 
+ *
  * @param node The node to print
  * @param options Printer options
  * @returns Formatted TypeScript code
@@ -282,24 +273,24 @@ export function printNode(
   options: ts.PrinterOptions = {
     newLine: ts.NewLineKind.LineFeed,
     removeComments: false,
-    omitTrailingSemicolon: false
+    omitTrailingSemicolon: false,
   }
 ): string {
   const printer = ts.createPrinter(options);
   const sourceFile = ts.createSourceFile(
-    'temp.ts',
-    '',
+    "temp.ts",
+    "",
     ts.ScriptTarget.Latest,
     false,
     ts.ScriptKind.TS
   );
-  
+
   return printer.printNode(ts.EmitHint.Unspecified, node, sourceFile);
 }
 
 /**
  * Print multiple TypeScript nodes to string
- * 
+ *
  * @param nodes The nodes to print
  * @param options Printer options
  * @returns Formatted TypeScript code
@@ -309,21 +300,19 @@ export function printNodes(
   options: ts.PrinterOptions = {
     newLine: ts.NewLineKind.LineFeed,
     removeComments: false,
-    omitTrailingSemicolon: false
+    omitTrailingSemicolon: false,
   }
 ): string {
-  return nodes.map(node => printNode(node, options)).join('\n\n');
+  return nodes.map((node) => printNode(node, options)).join("\n\n");
 }
 
 /**
  * Create a source file from nodes
- * 
+ *
  * @param nodes The nodes to include in the source file
  * @returns Source file node
  */
-export function createSourceFile(
-  nodes: ts.Statement[]
-): ts.SourceFile {
+export function createSourceFile(nodes: ts.Statement[]): ts.SourceFile {
   return ts.factory.createSourceFile(
     nodes,
     ts.factory.createToken(ts.SyntaxKind.EndOfFileToken),
@@ -333,7 +322,7 @@ export function createSourceFile(
 
 /**
  * Print a source file to string
- * 
+ *
  * @param sourceFile The source file to print
  * @param options Printer options
  * @returns Formatted TypeScript code
@@ -343,7 +332,7 @@ export function printSourceFile(
   options: ts.PrinterOptions = {
     newLine: ts.NewLineKind.LineFeed,
     removeComments: false,
-    omitTrailingSemicolon: false
+    omitTrailingSemicolon: false,
   }
 ): string {
   const printer = ts.createPrinter(options);
@@ -352,7 +341,7 @@ export function printSourceFile(
 
 /**
  * Create a literal expression from a JavaScript value
- * 
+ *
  * @param value The value to convert to a literal expression
  * @returns A literal expression node
  */
@@ -360,19 +349,19 @@ export function createLiteral(value: any): ts.Expression {
   if (value === null) {
     return ts.factory.createNull();
   }
-  
+
   if (value === undefined) {
-    return ts.factory.createIdentifier('undefined');
+    return ts.factory.createIdentifier("undefined");
   }
-  
+
   switch (typeof value) {
-    case 'string':
+    case "string":
       return ts.factory.createStringLiteral(value);
-    case 'number':
+    case "number":
       return ts.factory.createNumericLiteral(value);
-    case 'boolean':
+    case "boolean":
       return value ? ts.factory.createTrue() : ts.factory.createFalse();
-    case 'object':
+    case "object":
       if (Array.isArray(value)) {
         return createArrayLiteralExpression(value);
       }
@@ -385,36 +374,38 @@ export function createLiteral(value: any): ts.Expression {
 
 /**
  * Create an array literal expression
- * 
+ *
  * @param elements The array elements
  * @returns An array literal expression node
  */
 export function createArrayLiteralExpression(elements: any[]): ts.ArrayLiteralExpression {
   return ts.factory.createArrayLiteralExpression(
-    elements.map(element => createLiteral(element)),
+    elements.map((element) => createLiteral(element)),
     false
   );
 }
 
 /**
  * Create an object literal expression from a JavaScript object
- * 
+ *
  * @param obj The object to convert to an object literal expression
  * @returns An object literal expression node
  */
-export function createObjectLiteralExpression(obj: Record<string, any>): ts.ObjectLiteralExpression {
+export function createObjectLiteralExpression(
+  obj: Record<string, any>
+): ts.ObjectLiteralExpression {
   const properties: ts.ObjectLiteralElementLike[] = [];
-  
+
   for (const [key, value] of Object.entries(obj)) {
     properties.push(createPropertyAssignment(key, value));
   }
-  
+
   return ts.factory.createObjectLiteralExpression(properties, true);
 }
 
 /**
  * Create a property assignment for an object literal
- * 
+ *
  * @param name The property name
  * @param value The property value
  * @param readonly Whether the property is readonly (will be handled at the object level with 'as const')
@@ -426,19 +417,15 @@ export function createPropertyAssignment(
   readonly: boolean = false
 ): ts.PropertyAssignment {
   const identifier = ts.factory.createIdentifier(name);
-  const initializer = typeof value === 'object' && value !== null
-    ? createLiteral(value)
-    : createLiteral(value);
-    
-  const propertyAssignment = ts.factory.createPropertyAssignment(
-    identifier,
-    initializer
-  );
-  
+  const initializer =
+    typeof value === "object" && value !== null ? createLiteral(value) : createLiteral(value);
+
+  const propertyAssignment = ts.factory.createPropertyAssignment(identifier, initializer);
+
   // Note: TypeScript doesn't support readonly modifiers on object literal properties directly.
   // Readonly properties in object literals are typically achieved using 'as const' assertion
   // on the entire object, which we handle separately in createAsConstAssertion.
-  
+
   // If we need to add a comment to indicate it's readonly for documentation purposes:
   if (readonly) {
     ts.addSyntheticLeadingComment(
@@ -448,13 +435,13 @@ export function createPropertyAssignment(
       true
     );
   }
-  
+
   return propertyAssignment;
 }
 
 /**
  * Create a readonly modifier
- * 
+ *
  * @returns A readonly modifier
  */
 export function createReadonlyModifier(): ts.Modifier {
@@ -463,23 +450,20 @@ export function createReadonlyModifier(): ts.Modifier {
 
 /**
  * Create an 'as const' assertion
- * 
+ *
  * @param expression The expression to assert as const
  * @returns An as expression with const assertion
  */
 export function createAsConstAssertion(expression: ts.Expression): ts.AsExpression {
   return ts.factory.createAsExpression(
     expression,
-    ts.factory.createTypeReferenceNode(
-      ts.factory.createIdentifier('const'),
-      undefined
-    )
+    ts.factory.createTypeReferenceNode(ts.factory.createIdentifier("const"), undefined)
   );
 }
 
 /**
  * Create a variable declaration
- * 
+ *
  * @param name The variable name
  * @param initializer The initializer expression
  * @param type Optional type annotation
@@ -500,17 +484,14 @@ export function createVariableDeclaration(
     type ? ts.factory.createTypeReferenceNode(type, undefined) : undefined,
     initializer
   );
-  
+
   const variableDeclarationList = ts.factory.createVariableDeclarationList(
     [variableDeclaration],
     ts.NodeFlags.Const
   );
-  
-  const variableStatement = ts.factory.createVariableStatement(
-    modifiers,
-    variableDeclarationList
-  );
-  
+
+  const variableStatement = ts.factory.createVariableStatement(modifiers, variableDeclarationList);
+
   if (jsDoc) {
     ts.addSyntheticLeadingComment(
       variableStatement,
@@ -519,21 +500,18 @@ export function createVariableDeclaration(
       true
     );
   }
-  
+
   return variableStatement;
 }
 
 /**
  * Create a block statement
- * 
+ *
  * @param statements The statements in the block
  * @param jsDoc Optional JSDoc comment
  * @returns Block statement node
  */
-export function createBlock(
-  statements: ts.Statement[],
-  jsDoc?: ts.JSDoc
-): ts.Block {
+export function createBlock(statements: ts.Statement[], jsDoc?: ts.JSDoc): ts.Block {
   const block = ts.factory.createBlock(
     statements,
     true // multiLine
@@ -553,7 +531,7 @@ export function createBlock(
 
 /**
  * Create an if statement
- * 
+ *
  * @param condition The condition expression
  * @param thenStatement The then statement
  * @param elseStatement Optional else statement
@@ -567,15 +545,9 @@ export function createIfStatement(
   jsDoc?: ts.JSDoc
 ): ts.IfStatement {
   // Convert condition string to expression if needed
-  const conditionExpr = typeof condition === 'string'
-    ? parseExpression(condition)
-    : condition;
+  const conditionExpr = typeof condition === "string" ? parseExpression(condition) : condition;
 
-  const ifStatement = ts.factory.createIfStatement(
-    conditionExpr,
-    thenStatement,
-    elseStatement
-  );
+  const ifStatement = ts.factory.createIfStatement(conditionExpr, thenStatement, elseStatement);
 
   if (jsDoc) {
     ts.addSyntheticLeadingComment(
@@ -591,7 +563,7 @@ export function createIfStatement(
 
 /**
  * Create a switch statement
- * 
+ *
  * @param expression The expression to switch on
  * @param clauses The case and default clauses
  * @param jsDoc Optional JSDoc comment
@@ -603,9 +575,7 @@ export function createSwitchStatement(
   jsDoc?: ts.JSDoc
 ): ts.SwitchStatement {
   // Convert expression string to expression if needed
-  const expressionExpr = typeof expression === 'string'
-    ? parseExpression(expression)
-    : expression;
+  const expressionExpr = typeof expression === "string" ? parseExpression(expression) : expression;
 
   const switchStatement = ts.factory.createSwitchStatement(
     expressionExpr,
@@ -626,7 +596,7 @@ export function createSwitchStatement(
 
 /**
  * Create a case clause for a switch statement
- * 
+ *
  * @param expression The case expression
  * @param statements The statements in the case clause
  * @returns Case clause node
@@ -636,31 +606,24 @@ export function createCaseClause(
   statements: ts.NodeArray<ts.Statement>
 ): ts.CaseClause {
   // Convert expression string to expression if needed
-  const expressionExpr = typeof expression === 'string'
-    ? parseExpression(expression)
-    : expression;
+  const expressionExpr = typeof expression === "string" ? parseExpression(expression) : expression;
 
-  return ts.factory.createCaseClause(
-    expressionExpr,
-    statements
-  );
+  return ts.factory.createCaseClause(expressionExpr, statements);
 }
 
 /**
  * Create a default clause for a switch statement
- * 
+ *
  * @param statements The statements in the default clause
  * @returns Default clause node
  */
-export function createDefaultClause(
-  statements: ts.NodeArray<ts.Statement>
-): ts.DefaultClause {
+export function createDefaultClause(statements: ts.NodeArray<ts.Statement>): ts.DefaultClause {
   return ts.factory.createDefaultClause(statements);
 }
 
 /**
  * Create a for loop statement
- * 
+ *
  * @param initializer The initializer expression or variable declaration
  * @param condition The condition expression
  * @param incrementor The incrementor expression
@@ -677,7 +640,7 @@ export function createForStatement(
 ): ts.ForStatement {
   // Convert initializer string to expression if needed
   let initializerExpr: ts.Expression | ts.VariableDeclarationList | undefined;
-  if (typeof initializer === 'string') {
+  if (typeof initializer === "string") {
     initializerExpr = parseExpression(initializer);
   } else {
     initializerExpr = initializer;
@@ -685,7 +648,7 @@ export function createForStatement(
 
   // Convert condition string to expression if needed
   let conditionExpr: ts.Expression | undefined;
-  if (typeof condition === 'string') {
+  if (typeof condition === "string") {
     conditionExpr = parseExpression(condition);
   } else {
     conditionExpr = condition;
@@ -693,7 +656,7 @@ export function createForStatement(
 
   // Convert incrementor string to expression if needed
   let incrementorExpr: ts.Expression | undefined;
-  if (typeof incrementor === 'string') {
+  if (typeof incrementor === "string") {
     incrementorExpr = parseExpression(incrementor);
   } else {
     incrementorExpr = incrementor;
@@ -720,7 +683,7 @@ export function createForStatement(
 
 /**
  * Create a while loop statement
- * 
+ *
  * @param condition The condition expression
  * @param statement The loop body statement
  * @param jsDoc Optional JSDoc comment
@@ -732,14 +695,9 @@ export function createWhileStatement(
   jsDoc?: ts.JSDoc
 ): ts.WhileStatement {
   // Convert condition string to expression if needed
-  const conditionExpr = typeof condition === 'string'
-    ? parseExpression(condition)
-    : condition;
+  const conditionExpr = typeof condition === "string" ? parseExpression(condition) : condition;
 
-  const whileStatement = ts.factory.createWhileStatement(
-    conditionExpr,
-    statement
-  );
+  const whileStatement = ts.factory.createWhileStatement(conditionExpr, statement);
 
   if (jsDoc) {
     ts.addSyntheticLeadingComment(
@@ -755,7 +713,7 @@ export function createWhileStatement(
 
 /**
  * Create a do-while loop statement
- * 
+ *
  * @param statement The loop body statement
  * @param condition The condition expression
  * @param jsDoc Optional JSDoc comment
@@ -767,14 +725,9 @@ export function createDoWhileStatement(
   jsDoc?: ts.JSDoc
 ): ts.DoStatement {
   // Convert condition string to expression if needed
-  const conditionExpr = typeof condition === 'string'
-    ? parseExpression(condition)
-    : condition;
+  const conditionExpr = typeof condition === "string" ? parseExpression(condition) : condition;
 
-  const doWhileStatement = ts.factory.createDoStatement(
-    statement,
-    conditionExpr
-  );
+  const doWhileStatement = ts.factory.createDoStatement(statement, conditionExpr);
 
   if (jsDoc) {
     ts.addSyntheticLeadingComment(
@@ -790,7 +743,7 @@ export function createDoWhileStatement(
 
 /**
  * Create a return statement
- * 
+ *
  * @param expression Optional expression to return
  * @param jsDoc Optional JSDoc comment
  * @returns Return statement node
@@ -801,7 +754,7 @@ export function createReturnStatement(
 ): ts.ReturnStatement {
   // Convert expression string to expression if needed
   let expressionExpr: ts.Expression | undefined;
-  if (typeof expression === 'string') {
+  if (typeof expression === "string") {
     expressionExpr = parseExpression(expression);
   } else {
     expressionExpr = expression;
@@ -823,7 +776,7 @@ export function createReturnStatement(
 
 /**
  * Create an expression statement
- * 
+ *
  * @param expression The expression
  * @param jsDoc Optional JSDoc comment
  * @returns Expression statement node
@@ -833,9 +786,7 @@ export function createExpressionStatement(
   jsDoc?: ts.JSDoc
 ): ts.ExpressionStatement {
   // Convert expression string to expression if needed
-  const expressionExpr = typeof expression === 'string'
-    ? parseExpression(expression)
-    : expression;
+  const expressionExpr = typeof expression === "string" ? parseExpression(expression) : expression;
 
   const expressionStatement = ts.factory.createExpressionStatement(expressionExpr);
 
@@ -853,7 +804,7 @@ export function createExpressionStatement(
 
 /**
  * Parse a string expression into an AST node
- * 
+ *
  * @param expression The expression string
  * @returns Expression node
  */
@@ -865,7 +816,7 @@ export function parseExpression(expression: string): ts.Expression {
 
 /**
  * Parse a string statement into an AST node
- * 
+ *
  * @param statement The statement string
  * @returns Statement node
  */

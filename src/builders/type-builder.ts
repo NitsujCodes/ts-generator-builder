@@ -1,13 +1,9 @@
 /**
  * Type Builder implementation
  */
-import * as ts from 'typescript';
-import type { TypeBuilder } from '../types';
-import { 
-  createJSDocComment,
-  createExportModifier,
-  printNode
-} from '../utils/ast-utils';
+import * as ts from "typescript";
+import type { TypeBuilder } from "../types";
+import { createJSDocComment, createExportModifier, printNode } from "../utils/ast-utils";
 
 /**
  * Type parameter definition
@@ -30,7 +26,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Create a new TypeBuilder
-   * 
+   *
    * @param name The name of the type
    * @param shouldExport Whether the type should be exported
    */
@@ -41,7 +37,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Set the type to a primitive type
-   * 
+   *
    * @param type The primitive type (string, number, boolean, etc.)
    * @returns The builder instance for chaining
    */
@@ -52,7 +48,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Set the type to a reference to another type
-   * 
+   *
    * @param type The type to reference
    * @returns The builder instance for chaining
    */
@@ -63,31 +59,31 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Create a union type
-   * 
+   *
    * @param types The types to union
    * @returns The builder instance for chaining
    */
   union(types: string[]): this {
-    const typeNodes = types.map(type => this.createTypeNode(type));
+    const typeNodes = types.map((type) => this.createTypeNode(type));
     this.typeNode = ts.factory.createUnionTypeNode(typeNodes);
     return this;
   }
 
   /**
    * Create an intersection type
-   * 
+   *
    * @param types The types to intersect
    * @returns The builder instance for chaining
    */
   intersection(types: string[]): this {
-    const typeNodes = types.map(type => this.createTypeNode(type));
+    const typeNodes = types.map((type) => this.createTypeNode(type));
     this.typeNode = ts.factory.createIntersectionTypeNode(typeNodes);
     return this;
   }
 
   /**
    * Create an array type
-   * 
+   *
    * @param elementType The type of the array elements
    * @returns The builder instance for chaining
    */
@@ -99,34 +95,31 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Create a tuple type
-   * 
+   *
    * @param elementTypes The types of the tuple elements
    * @returns The builder instance for chaining
    */
   tuple(elementTypes: string[]): this {
-    const elementTypeNodes = elementTypes.map(type => this.createTypeNode(type));
+    const elementTypeNodes = elementTypes.map((type) => this.createTypeNode(type));
     this.typeNode = ts.factory.createTupleTypeNode(elementTypeNodes);
     return this;
   }
 
   /**
    * Create a keyof type
-   * 
+   *
    * @param type The type to get keys from
    * @returns The builder instance for chaining
    */
   keyof(type: string): this {
     const typeNode = this.createTypeNode(type);
-    this.typeNode = ts.factory.createTypeOperatorNode(
-      ts.SyntaxKind.KeyOfKeyword,
-      typeNode
-    );
+    this.typeNode = ts.factory.createTypeOperatorNode(ts.SyntaxKind.KeyOfKeyword, typeNode);
     return this;
   }
 
   /**
    * Create a typeof type
-   * 
+   *
    * @param value The value to get the type of
    * @returns The builder instance for chaining
    */
@@ -138,7 +131,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Add a type parameter (generic)
-   * 
+   *
    * @param name The name of the type parameter
    * @param constraint Optional constraint for the type parameter
    * @param defaultType Optional default type for the type parameter
@@ -148,25 +141,27 @@ export class TypeBuilderImpl implements TypeBuilder {
     this.typeParameters.push({
       name,
       constraint,
-      defaultType
+      defaultType,
     });
     return this;
   }
 
   /**
    * Add multiple type parameters (generics)
-   * 
+   *
    * @param params The type parameters to add
    * @returns The builder instance for chaining
    */
-  addTypeParameters(params: Array<{ name: string, constraint?: string, defaultType?: string }>): this {
+  addTypeParameters(
+    params: Array<{ name: string; constraint?: string; defaultType?: string }>
+  ): this {
     this.typeParameters.push(...params);
     return this;
   }
 
   /**
    * Add a JSDoc comment to the type
-   * 
+   *
    * @param comment The JSDoc comment
    * @returns The builder instance for chaining
    */
@@ -177,7 +172,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Generate the TypeScript code for the type
-   * 
+   *
    * @returns The generated TypeScript code
    */
   generate(): string {
@@ -187,7 +182,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Generate the AST node for the type
-   * 
+   *
    * @returns The type alias declaration node
    */
   generateNode(): ts.TypeAliasDeclaration {
@@ -197,19 +192,14 @@ export class TypeBuilderImpl implements TypeBuilder {
     }
 
     // Create type parameters if any
-    const typeParameters = this.typeParameters.length > 0
-      ? this.createTypeParameterNodes()
-      : undefined;
+    const typeParameters =
+      this.typeParameters.length > 0 ? this.createTypeParameterNodes() : undefined;
 
     // Create JSDoc comment if provided
-    const jsDoc = this.comments
-      ? createJSDocComment(this.comments)
-      : undefined;
+    const jsDoc = this.comments ? createJSDocComment(this.comments) : undefined;
 
     // Create modifiers if needed
-    const modifiers: ts.Modifier[] = this.shouldExport
-      ? [createExportModifier()]
-      : [];
+    const modifiers: ts.Modifier[] = this.shouldExport ? [createExportModifier()] : [];
 
     // Create the type alias declaration
     const typeAliasDeclaration = ts.factory.createTypeAliasDeclaration(
@@ -234,14 +224,12 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Create type parameter nodes from the type parameters
-   * 
+   *
    * @returns Array of type parameter nodes
    */
   private createTypeParameterNodes(): ts.TypeParameterDeclaration[] {
-    return this.typeParameters.map(param => {
-      const constraintNode = param.constraint
-        ? this.createTypeNode(param.constraint)
-        : undefined;
+    return this.typeParameters.map((param) => {
+      const constraintNode = param.constraint ? this.createTypeNode(param.constraint) : undefined;
 
       const defaultTypeNode = param.defaultType
         ? this.createTypeNode(param.defaultType)
@@ -258,7 +246,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Create a type node from a type string
-   * 
+   *
    * @param type The type string
    * @returns The type node
    */
@@ -270,20 +258,16 @@ export class TypeBuilderImpl implements TypeBuilder {
 
     // For literal types (strings, numbers, booleans), create a literal type node
     if (this.isStringLiteral(type)) {
-      return ts.factory.createLiteralTypeNode(
-        ts.factory.createStringLiteral(type.slice(1, -1))
-      );
+      return ts.factory.createLiteralTypeNode(ts.factory.createStringLiteral(type.slice(1, -1)));
     }
 
     if (this.isNumberLiteral(type)) {
-      return ts.factory.createLiteralTypeNode(
-        ts.factory.createNumericLiteral(type)
-      );
+      return ts.factory.createLiteralTypeNode(ts.factory.createNumericLiteral(type));
     }
 
-    if (type === 'true' || type === 'false') {
+    if (type === "true" || type === "false") {
       return ts.factory.createLiteralTypeNode(
-        type === 'true' ? ts.factory.createTrue() : ts.factory.createFalse()
+        type === "true" ? ts.factory.createTrue() : ts.factory.createFalse()
       );
     }
 
@@ -297,9 +281,7 @@ export class TypeBuilderImpl implements TypeBuilder {
     // For array types, create an array type node
     if (this.isArrayType(type)) {
       const elementType = type.slice(0, -2);
-      return ts.factory.createArrayTypeNode(
-        this.createTypeNode(elementType)
-      );
+      return ts.factory.createArrayTypeNode(this.createTypeNode(elementType));
     }
 
     // For complex types, create a type reference node
@@ -310,7 +292,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Check if a type string is a simple type (identifier)
-   * 
+   *
    * @param type The type string
    * @returns Whether the type is a simple type
    */
@@ -320,7 +302,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Check if a type string is a string literal
-   * 
+   *
    * @param type The type string
    * @returns Whether the type is a string literal
    */
@@ -330,7 +312,7 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Check if a type string is a number literal
-   * 
+   *
    * @param type The type string
    * @returns Whether the type is a number literal
    */
@@ -340,21 +322,21 @@ export class TypeBuilderImpl implements TypeBuilder {
 
   /**
    * Check if a type string is an object type
-   * 
+   *
    * @param type The type string
    * @returns Whether the type is an object type
    */
   private isObjectType(type: string): boolean {
-    return type.startsWith('{') && type.endsWith('}');
+    return type.startsWith("{") && type.endsWith("}");
   }
 
   /**
    * Check if a type string is an array type
-   * 
+   *
    * @param type The type string
    * @returns Whether the type is an array type
    */
   private isArrayType(type: string): boolean {
-    return type.endsWith('[]');
+    return type.endsWith("[]");
   }
 }

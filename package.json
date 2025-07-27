@@ -2,7 +2,13 @@
   "name": "ts-generator-builder",
   "version": "1.0.0",
   "description": "A TypeScript code generation library with fluent builder API",
-  "keywords": ["typescript", "code-generation", "ast", "builder", "codegen"],
+  "keywords": [
+    "typescript",
+    "code-generation",
+    "ast",
+    "builder",
+    "codegen"
+  ],
   "author": "Your Name <your.email@example.com>",
   "license": "MIT",
   "homepage": "https://github.com/nitsujcodes/ts-generator-builder#readme",
@@ -33,18 +39,29 @@
   },
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "npm run build",
-    "test": "bunx tsx tests/test.ts",
-    "start": "bunx tsx ./src/index.ts"
+    "test": "jest",
+    "lint-check": "pnpx eslint",
+    "lint-fix": "pnpx eslint --fix",
+    "format": "prettier --write"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "typescript": "^5"
+    "@eslint/js": "^9.32.0",
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "eslint": "^9.32.0",
+    "globals": "^16.3.0",
+    "jest": "^30.0.5",
+    "pnpm": "^10.13.1",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "change-case": "^5.4.4"
-  }
+  },
+  "packageManager": "pnpm@9.15.3+sha512.1f79bc245a66eb0b07c5d4d83131240774642caaa86ef7d0434ab47c0d16f66b04e21e0c086eb61e62c77efc4d7f7ec071afad3796af64892fae66509173893a"
 }

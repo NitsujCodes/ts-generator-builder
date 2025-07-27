@@ -1,11 +1,16 @@
 /**
  * Core Generator implementation
  */
-import * as ts from 'typescript';
-import type { Generator as GeneratorInterface, GeneratorConfig, Section, SectionOptions } from './types';
-import { formatTimestamp } from './utils/utils';
-import { createJSDocComment } from './utils/ast-utils';
-import { SectionImpl } from './section';
+import * as ts from "typescript";
+import type {
+  Generator as GeneratorInterface,
+  GeneratorConfig,
+  Section,
+  SectionOptions,
+} from "./types";
+import { formatTimestamp } from "./utils/utils";
+import { createJSDocComment } from "./utils/ast-utils";
+import { SectionImpl } from "./section";
 
 /**
  * Implementation of the Generator interface
@@ -16,30 +21,30 @@ export class GeneratorImpl implements GeneratorInterface {
 
   /**
    * Create a new Generator
-   * 
+   *
    * @param config Configuration options for the generator
    */
   constructor(config: GeneratorConfig = {}) {
     this.config = {
       sectionDefaults: {
-        jsdocStyle: 'multi',
+        jsdocStyle: "multi",
         addEndComment: true,
         exportAll: false,
-        spacing: 'normal',
+        spacing: "normal",
         sortItems: false,
-        ...config.sectionDefaults
+        ...config.sectionDefaults,
       },
       globalMetadata: {
-        generator: 'ts-generator-builder',
+        generator: "ts-generator-builder",
         generatedAt: formatTimestamp(),
-        ...config.globalMetadata
-      }
+        ...config.globalMetadata,
+      },
     };
   }
 
   /**
    * Add a section to the generator
-   * 
+   *
    * @param name The name of the section
    * @param optionsOrCallback Section options or callback function
    * @param callback Optional callback function if options are provided
@@ -53,7 +58,7 @@ export class GeneratorImpl implements GeneratorInterface {
     let options: SectionOptions = {};
     let sectionCallback: (section: Section) => void;
 
-    if (typeof optionsOrCallback === 'function') {
+    if (typeof optionsOrCallback === "function") {
       sectionCallback = optionsOrCallback;
     } else {
       options = optionsOrCallback;
@@ -63,7 +68,7 @@ export class GeneratorImpl implements GeneratorInterface {
     // Merge default options with provided options
     const mergedOptions: SectionOptions = {
       ...this.config.sectionDefaults,
-      ...options
+      ...options,
     };
 
     const section = new SectionImpl(name, mergedOptions);
@@ -75,7 +80,7 @@ export class GeneratorImpl implements GeneratorInterface {
 
   /**
    * Generate the TypeScript code
-   * 
+   *
    * @returns The generated TypeScript code
    */
   generate(): string {
@@ -87,14 +92,14 @@ export class GeneratorImpl implements GeneratorInterface {
     });
 
     // Generate code for each section
-    const sectionCodes = sortedSections.map(section => section.generate());
+    const sectionCodes = sortedSections.map((section) => section.generate());
 
     // Combine all section codes into a single string
-    const combinedCode = sectionCodes.join('\n\n');
+    const combinedCode = sectionCodes.join("\n\n");
 
     // Parse the combined code into a source file
     const sourceFile = ts.createSourceFile(
-      'generated.ts',
+      "generated.ts",
       combinedCode,
       ts.ScriptTarget.Latest,
       true
@@ -103,7 +108,7 @@ export class GeneratorImpl implements GeneratorInterface {
     // Add a header comment with global metadata if provided
     if (this.config.globalMetadata && Object.keys(this.config.globalMetadata).length > 0) {
       const headerComment = createJSDocComment(
-        'Generated TypeScript code',
+        "Generated TypeScript code",
         this.config.globalMetadata
       );
 
@@ -122,7 +127,7 @@ export class GeneratorImpl implements GeneratorInterface {
     const printer = ts.createPrinter({
       newLine: ts.NewLineKind.LineFeed,
       removeComments: false,
-      omitTrailingSemicolon: false
+      omitTrailingSemicolon: false,
     });
 
     return printer.printFile(sourceFile);

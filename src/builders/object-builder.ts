@@ -1,12 +1,9 @@
 /**
  * Object Builder implementation
  */
-import * as ts from 'typescript';
-import type { ObjectBuilder, ObjectOptions, ObjectPropertyOptions } from '../types';
-import { 
-  createPropertyAssignment,
-  createAsConstAssertion
-} from '../utils/ast-utils';
+import * as ts from "typescript";
+import type { ObjectBuilder, ObjectOptions, ObjectPropertyOptions } from "../types";
+import { createPropertyAssignment, createAsConstAssertion } from "../utils/ast-utils";
 
 /**
  * Property definition for an object
@@ -38,7 +35,7 @@ export class ObjectBuilderImpl implements ObjectBuilder {
 
   /**
    * Create a new ObjectBuilder
-   * 
+   *
    * @param options Configuration options for the object
    */
   constructor(options: ObjectOptions = {}) {
@@ -48,7 +45,7 @@ export class ObjectBuilderImpl implements ObjectBuilder {
 
   /**
    * Add a property to the object with a value
-   * 
+   *
    * @param name The name of the property
    * @param value The value of the property
    * @param options Configuration options for the property
@@ -58,36 +55,40 @@ export class ObjectBuilderImpl implements ObjectBuilder {
     this.properties.push({
       name,
       value,
-      options
+      options,
     });
-    
+
     return this;
   }
 
   /**
    * Add a nested object property
-   * 
+   *
    * @param name The name of the property
    * @param callback A callback function to configure the nested object
    * @param options Configuration options for the property
    * @returns The builder instance for chaining
    */
-  nestedObject(name: string, callback: (builder: ObjectBuilder) => void, options: ObjectPropertyOptions = {}): this {
+  nestedObject(
+    name: string,
+    callback: (builder: ObjectBuilder) => void,
+    options: ObjectPropertyOptions = {}
+  ): this {
     const builder = new ObjectBuilderImpl();
     callback(builder);
-    
+
     this.nestedObjects.push({
       name,
       builder,
-      options
+      options,
     });
-    
+
     return this;
   }
 
   /**
    * Add a JSDoc comment to the object
-   * 
+   *
    * @param comment The JSDoc comment
    * @returns The builder instance for chaining
    */
@@ -98,7 +99,7 @@ export class ObjectBuilderImpl implements ObjectBuilder {
 
   /**
    * Make the entire object readonly using 'as const' assertion
-   * 
+   *
    * @returns The builder instance for chaining
    */
   asConst(): this {
@@ -108,48 +109,48 @@ export class ObjectBuilderImpl implements ObjectBuilder {
 
   /**
    * Generate the TypeScript code for the object
-   * 
+   *
    * @returns The generated TypeScript code
    */
   generate(): string {
     // Use a direct string-based approach for generating object literals
-    let result = '';
-    
+    let result = "";
+
     // Add JSDoc if provided
     if (this.comments) {
       if (Array.isArray(this.comments)) {
-        result += '/**\n';
+        result += "/**\n";
         for (const line of this.comments) {
           result += ` * ${line}\n`;
         }
-        result += ' */\n';
+        result += " */\n";
       } else {
         result += `/** ${this.comments} */\n`;
       }
     }
-    
+
     // Handle named objects (variable declarations)
     if (this.options.name) {
-      const exportKeyword = this.options.export ? 'export ' : '';
+      const exportKeyword = this.options.export ? "export " : "";
       result += `${exportKeyword}const ${this.options.name} = `;
-      
+
       // Generate the object literal
       result += this.generateObjectLiteral();
-      
+
       // Add 'as const' assertion if needed
       if (this.useAsConst) {
-        result += ' as const';
+        result += " as const";
       }
-      
+
       // Add semicolon for variable declarations
-      result += ';';
-    } 
+      result += ";";
+    }
     // Handle anonymous objects
     else {
       // For anonymous objects, we need to format them differently
       // to ensure they're valid TypeScript expressions
       const objectLiteral = this.generateObjectLiteral();
-      
+
       if (this.useAsConst) {
         // For 'as const' assertions, wrap the object in parentheses
         result += `(${objectLiteral}) as const`;
@@ -157,62 +158,62 @@ export class ObjectBuilderImpl implements ObjectBuilder {
         result += objectLiteral;
       }
     }
-    
+
     return result;
   }
-  
+
   /**
    * Generate a string representation of the object literal
-   * 
+   *
    * @returns A string representation of the object literal
    */
   private generateObjectLiteral(): string {
     const properties: string[] = [];
-    
+
     // Add regular properties
     for (const prop of this.properties) {
-      const readonlyPrefix = prop.options.readonly ? '/* readonly */ ' : '';
+      const readonlyPrefix = prop.options.readonly ? "/* readonly */ " : "";
       const valueStr = this.stringifyValue(prop.value);
       properties.push(`${readonlyPrefix}${prop.name}: ${valueStr}`);
     }
-    
+
     // Add nested objects
     for (const nestedObj of this.nestedObjects) {
-      const readonlyPrefix = nestedObj.options.readonly ? '/* readonly */ ' : '';
+      const readonlyPrefix = nestedObj.options.readonly ? "/* readonly */ " : "";
       const nestedObjStr = (nestedObj.builder as ObjectBuilderImpl).generateObjectLiteral();
       properties.push(`${readonlyPrefix}${nestedObj.name}: ${nestedObjStr}`);
     }
-    
+
     // Format the object literal
     if (properties.length === 0) {
-      return '{}';
+      return "{}";
     }
-    
-    return `{\n  ${properties.join(',\n  ')}\n}`;
+
+    return `{\n  ${properties.join(",\n  ")}\n}`;
   }
-  
+
   /**
    * Convert a value to its string representation
-   * 
+   *
    * @param value The value to stringify
    * @returns A string representation of the value
    */
   private stringifyValue(value: any): string {
     if (value === null) {
-      return 'null';
+      return "null";
     }
-    
+
     if (value === undefined) {
-      return 'undefined';
+      return "undefined";
     }
-    
+
     switch (typeof value) {
-      case 'string':
+      case "string":
         return `"${value}"`;
-      case 'number':
-      case 'boolean':
+      case "number":
+      case "boolean":
         return String(value);
-      case 'object':
+      case "object":
         if (Array.isArray(value)) {
           return this.stringifyArray(value);
         }
@@ -221,67 +222,60 @@ export class ObjectBuilderImpl implements ObjectBuilder {
         return `"${String(value)}"`;
     }
   }
-  
+
   /**
    * Convert an array to its string representation
-   * 
+   *
    * @param arr The array to stringify
    * @returns A string representation of the array
    */
   private stringifyArray(arr: any[]): string {
     if (arr.length === 0) {
-      return '[]';
+      return "[]";
     }
-    
-    const elements = arr.map(item => this.stringifyValue(item));
-    return `[${elements.join(', ')}]`;
+
+    const elements = arr.map((item) => this.stringifyValue(item));
+    return `[${elements.join(", ")}]`;
   }
-  
+
   /**
    * Convert an object to its string representation
-   * 
+   *
    * @param obj The object to stringify
    * @returns A string representation of the object
    */
   private stringifyObject(obj: Record<string, any>): string {
     const properties: string[] = [];
-    
+
     for (const [key, value] of Object.entries(obj)) {
       properties.push(`${key}: ${this.stringifyValue(value)}`);
     }
-    
+
     if (properties.length === 0) {
-      return '{}';
+      return "{}";
     }
-    
-    return `{\n    ${properties.join(',\n    ')}\n  }`;
+
+    return `{\n    ${properties.join(",\n    ")}\n  }`;
   }
 
   /**
    * Generate the AST node for the object
-   * 
+   *
    * @returns The object literal expression node
    */
   generateNode(): ts.Expression {
     // Create property assignments for regular properties
-    const propertyAssignments: ts.PropertyAssignment[] = this.properties.map(prop => {
-      return createPropertyAssignment(
-        prop.name,
-        prop.value,
-        prop.options.readonly || false
-      );
+    const propertyAssignments: ts.PropertyAssignment[] = this.properties.map((prop) => {
+      return createPropertyAssignment(prop.name, prop.value, prop.options.readonly || false);
     });
-    
+
     // Create property assignments for nested objects
-    const nestedObjectAssignments: ts.PropertyAssignment[] = this.nestedObjects.map(nestedObj => {
+    const nestedObjectAssignments: ts.PropertyAssignment[] = this.nestedObjects.map((nestedObj) => {
       const nestedNode = nestedObj.builder.generateNode();
-      
+
       const identifier = ts.factory.createIdentifier(nestedObj.name);
-      const propertyAssignment = ts.factory.createPropertyAssignment(
-        identifier,
-        nestedNode
-      );
-      
+      const propertyAssignment = ts.factory.createPropertyAssignment(identifier, nestedNode);
+
       // Add a comment to indicate readonly for documentation purposes
       if (nestedObj.options.readonly) {
         ts.addSyntheticLeadingComment(
@@ -291,24 +285,21 @@ export class ObjectBuilderImpl implements ObjectBuilder {
           true
         );
       }
-      
+
       return propertyAssignment;
     });
-    
+
     // Combine all property assignments
     const allProperties = [...propertyAssignments, ...nestedObjectAssignments];
-    
+
     // Create the object literal expression
-    let objectLiteral = ts.factory.createObjectLiteralExpression(
-      allProperties,
-      true
-    );
-    
+    let objectLiteral = ts.factory.createObjectLiteralExpression(allProperties, true);
+
     // Add 'as const' assertion if needed
     if (this.useAsConst) {
       return createAsConstAssertion(objectLiteral);
     }
-    
+
     return objectLiteral;
   }
 }
