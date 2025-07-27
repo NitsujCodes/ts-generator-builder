@@ -14,7 +14,7 @@ import { pascalCase } from "change-case";
 export function formatJSDoc(
   comment: string | string[] | undefined,
   style: "single" | "multi" = "multi",
-  metadata?: Record<string, any>
+  metadata?: Record<string, never>
 ): string {
   if (!comment && !metadata) {
     return "";
@@ -63,7 +63,7 @@ export function formatJSDoc(
 export function formatSectionComment(
   name: string,
   description?: string | string[],
-  metadata?: Record<string, any>,
+  metadata?: Record<string, never>,
   style: "single" | "multi" = "multi"
 ): string {
   const commentLines: string[] = [name];

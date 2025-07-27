@@ -24,13 +24,14 @@ export class TypeUsageTracker {
     const visit = (node: ts.Node) => {
       // Handle different types of nodes that might reference types
       switch (node.kind) {
-        case ts.SyntaxKind.Identifier:
+        case ts.SyntaxKind.Identifier: {
           const identifier = node as ts.Identifier;
           console.log(`  Found identifier: "${identifier.text}"`);
           this.usedIdentifiers.add(identifier.text);
           break;
+        }
 
-        case ts.SyntaxKind.TypeReference:
+        case ts.SyntaxKind.TypeReference: {
           const typeRef = node as ts.TypeReferenceNode;
           if (ts.isIdentifier(typeRef.typeName)) {
             this.usedIdentifiers.add(typeRef.typeName.text);
@@ -39,24 +40,27 @@ export class TypeUsageTracker {
             this.scanQualifiedName(typeRef.typeName);
           }
           break;
+        }
 
         case ts.SyntaxKind.QualifiedName:
           this.scanQualifiedName(node as ts.QualifiedName);
           break;
 
-        case ts.SyntaxKind.PropertyAccessExpression:
+        case ts.SyntaxKind.PropertyAccessExpression: {
           const propAccess = node as ts.PropertyAccessExpression;
           if (ts.isIdentifier(propAccess.expression)) {
             this.usedIdentifiers.add(propAccess.expression.text);
           }
           break;
+        }
 
-        case ts.SyntaxKind.CallExpression:
+        case ts.SyntaxKind.CallExpression: {
           const callExpr = node as ts.CallExpression;
           if (ts.isIdentifier(callExpr.expression)) {
             this.usedIdentifiers.add(callExpr.expression.text);
           }
           break;
+        }
       }
 
       // Recursively visit child nodes

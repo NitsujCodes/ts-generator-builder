@@ -37,7 +37,7 @@ export interface GeneratorConfig {
     /**
      * Additional custom metadata
      */
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -107,7 +107,7 @@ export interface SectionOptions {
     /**
      * Additional custom metadata
      */
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -330,7 +330,7 @@ export interface Section {
    * section.addSwitch((switchBuilder) => {
    *   switchBuilder
    *     .expression('status')
-   *     .case('"pending"', (block) => {
+   *     .case('pending', (block) => {
    *       block.addStatement('console.log("Pending")');
    *       block.addStatement('break');
    *     });
@@ -613,7 +613,7 @@ export interface ObjectBuilder {
    * @param options Configuration options for the property
    * @returns The builder instance for chaining
    */
-  property(name: string, value: any, options?: ObjectPropertyOptions): this;
+  property(name: string, value: never, options?: ObjectPropertyOptions): this;
 
   /**
    * Add a nested object property
@@ -854,7 +854,7 @@ export interface SwitchStatementBuilder extends StatementBuilder {
    * @returns The builder instance for chaining
    *
    * @example
-   * builder.case('"pending"', (block) => {
+   * builder.case('pending', (block) => {
    *   block.addStatement('console.log("Pending")');
    *   block.addStatement('break');
    * });
@@ -917,7 +917,7 @@ export interface BlockBuilder {
    * block.addSwitch((switchBuilder) => {
    *   switchBuilder
    *     .expression('status')
-   *     .case('"pending"', (caseBlock) => {
+   *     .case('pending', (caseBlock) => {
    *       caseBlock.addStatement('console.log("Pending")');
    *       caseBlock.addStatement('break');
    *     });

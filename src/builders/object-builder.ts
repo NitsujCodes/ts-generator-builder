@@ -10,7 +10,7 @@ import { createPropertyAssignment, createAsConstAssertion } from "../utils/ast-u
  */
 interface PropertyDefinition {
   name: string;
-  value: any;
+  value: never;
   options: ObjectPropertyOptions;
 }
 
@@ -51,7 +51,7 @@ export class ObjectBuilderImpl implements ObjectBuilder {
    * @param options Configuration options for the property
    * @returns The builder instance for chaining
    */
-  property(name: string, value: any, options: ObjectPropertyOptions = {}): this {
+  property(name: string, value: never, options: ObjectPropertyOptions = {}): this {
     this.properties.push({
       name,
       value,
@@ -198,7 +198,7 @@ export class ObjectBuilderImpl implements ObjectBuilder {
    * @param value The value to stringify
    * @returns A string representation of the value
    */
-  private stringifyValue(value: any): string {
+  private stringifyValue(value: never): string {
     if (value === null) {
       return "null";
     }
@@ -229,7 +229,7 @@ export class ObjectBuilderImpl implements ObjectBuilder {
    * @param arr The array to stringify
    * @returns A string representation of the array
    */
-  private stringifyArray(arr: any[]): string {
+  private stringifyArray(arr: never[]): string {
     if (arr.length === 0) {
       return "[]";
     }
@@ -244,7 +244,7 @@ export class ObjectBuilderImpl implements ObjectBuilder {
    * @param obj The object to stringify
    * @returns A string representation of the object
    */
-  private stringifyObject(obj: Record<string, any>): string {
+  private stringifyObject(obj: Record<string, never>): string {
     const properties: string[] = [];
 
     for (const [key, value] of Object.entries(obj)) {

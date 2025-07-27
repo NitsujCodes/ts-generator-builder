@@ -14,7 +14,7 @@ import * as ts from "typescript";
  */
 export function createJSDocComment(
   text: string | string[] | undefined,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): ts.JSDoc {
   if (!text && !metadata) {
     return createEmptyJSDocComment();
@@ -345,7 +345,7 @@ export function printSourceFile(
  * @param value The value to convert to a literal expression
  * @returns A literal expression node
  */
-export function createLiteral(value: any): ts.Expression {
+export function createLiteral(value: unknown): ts.Expression {
   if (value === null) {
     return ts.factory.createNull();
   }
@@ -365,7 +365,7 @@ export function createLiteral(value: any): ts.Expression {
       if (Array.isArray(value)) {
         return createArrayLiteralExpression(value);
       }
-      return createObjectLiteralExpression(value);
+      return createObjectLiteralExpression(value as Record<string, unknown>);
     default:
       // For complex cases, convert to string
       return ts.factory.createStringLiteral(String(value));
@@ -378,7 +378,7 @@ export function createLiteral(value: any): ts.Expression {
  * @param elements The array elements
  * @returns An array literal expression node
  */
-export function createArrayLiteralExpression(elements: any[]): ts.ArrayLiteralExpression {
+export function createArrayLiteralExpression(elements: unknown[]): ts.ArrayLiteralExpression {
   return ts.factory.createArrayLiteralExpression(
     elements.map((element) => createLiteral(element)),
     false
@@ -392,7 +392,7 @@ export function createArrayLiteralExpression(elements: any[]): ts.ArrayLiteralEx
  * @returns An object literal expression node
  */
 export function createObjectLiteralExpression(
-  obj: Record<string, any>
+  obj: Record<string, unknown>
 ): ts.ObjectLiteralExpression {
   const properties: ts.ObjectLiteralElementLike[] = [];
 
@@ -413,7 +413,7 @@ export function createObjectLiteralExpression(
  */
 export function createPropertyAssignment(
   name: string,
-  value: any,
+  value: unknown,
   readonly: boolean = false
 ): ts.PropertyAssignment {
   const identifier = ts.factory.createIdentifier(name);
