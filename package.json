@@ -3,7 +3,7 @@
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
-    "test": "bunx tsx ./src/test.ts",
+    "test": "bunx tsx src/test.ts",
     "build": "bunx tsc ",
     "start": "bunx tsx ./src/index.ts"
   },

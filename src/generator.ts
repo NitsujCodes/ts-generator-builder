@@ -1,7 +1,7 @@
 /**
  * Core Generator implementation
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 import type { Generator as GeneratorInterface, GeneratorConfig, Section, SectionOptions } from './types';
 import { formatTimestamp } from './utils';
 import { createJSDocComment } from './ast-utils';
@@ -110,7 +110,7 @@ export class GeneratorImpl implements GeneratorInterface {
       // Add the header comment to the source file
       if (sourceFile.statements.length > 0) {
         ts.addSyntheticLeadingComment(
-          sourceFile.statements[0],
+          sourceFile.statements[0] as ts.Statement,
           ts.SyntaxKind.MultiLineCommentTrivia,
           `* ${headerComment.comment} `,
           true

@@ -68,7 +68,7 @@ const result = generator
         .markUsed('UserRole');
     });
     
-    // Unused imports (should not appear in output)
+    // Unused imports (should not appear in the output)
     section.addImports('unused-module', (builder) => {
       builder
         .named('UnusedComponent')

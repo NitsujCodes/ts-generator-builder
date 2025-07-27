@@ -1,7 +1,7 @@
 /**
  * Enum Builder implementation
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 import type { EnumBuilder } from '../types';
 import { 
   createEnum, 
@@ -24,11 +24,11 @@ interface EnumMemberDefinition {
  * Implementation of the EnumBuilder interface
  */
 export class EnumBuilderImpl implements EnumBuilder {
-  private name: string;
+  private readonly name: string;
   private members: EnumMemberDefinition[] = [];
   private comments: string | string[] | undefined;
-  private shouldExport: boolean;
-  private isConst: boolean;
+  private readonly shouldExport: boolean;
+  private readonly isConst: boolean;
 
   /**
    * Create a new EnumBuilder

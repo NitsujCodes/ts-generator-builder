@@ -1,7 +1,7 @@
 /**
  * For Loop Builder implementation
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 import type { ForLoopBuilder } from '../types';
 import { LoopBuilderImpl } from './loop-builder';
 import { createForStatement } from '../ast-utils';

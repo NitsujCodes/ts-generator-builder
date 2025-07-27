@@ -1,11 +1,16 @@
 /**
  * If Statement Builder implementation
  */
-import * as ts from 'typescript';
-import type { IfStatementBuilder, BlockBuilder } from '../types';
-import { StatementBuilderImpl } from './statement-builder';
-import { BlockBuilderImpl } from './block-builder';
-import { createIfStatement } from '../ast-utils';
+import ts from 'typescript';
+import type {BlockBuilder, IfStatementBuilder} from '../types';
+import {StatementBuilderImpl} from './statement-builder';
+import {BlockBuilderImpl} from './block-builder';
+import {createIfStatement} from '../ast-utils';
+
+type ElseIfClause = {
+  condition: string;
+  block: BlockBuilderImpl;
+}
 
 /**
  * Implementation of the IfStatementBuilder interface
@@ -13,7 +18,7 @@ import { createIfStatement } from '../ast-utils';
 export class IfStatementBuilderImpl extends StatementBuilderImpl implements IfStatementBuilder {
   private conditionExpr: string | undefined;
   private thenBlock: BlockBuilderImpl | undefined;
-  private elseIfClauses: Array<{ condition: string; block: BlockBuilderImpl }> = [];
+  private elseIfClauses: Array<ElseIfClause> = [];
   private elseBlock: BlockBuilderImpl | undefined;
 
   /**
@@ -99,13 +104,12 @@ export class IfStatementBuilderImpl extends StatementBuilderImpl implements IfSt
 
       // Build the chain of else-if statements from the end to the beginning
       for (let i = this.elseIfClauses.length - 1; i >= 0; i--) {
-        const { condition, block } = this.elseIfClauses[i];
-        const elseIfStatement = createIfStatement(
-          condition,
-          block.generateNode(),
-          currentElse
+        const { condition, block } = this.elseIfClauses[i] as ElseIfClause;
+        currentElse = createIfStatement(
+            condition,
+            block.generateNode(),
+            currentElse
         );
-        currentElse = elseIfStatement;
       }
 
       elseStatement = currentElse;

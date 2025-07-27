@@ -135,7 +135,7 @@ export function formatEnumMember(key: string, value: string | number): string {
   // Format string values with quotes, number values without
   const formattedValue = typeof value === 'string' ? `'${value}'` : value;
   
-  // Convert key to PascalCase using change-case
+  // Convert key to PascalCase using the change-case
   const pascalCaseKey = pascalCase(key);
   
   return `${pascalCaseKey} = ${formattedValue},`;

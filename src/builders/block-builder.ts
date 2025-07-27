@@ -1,12 +1,11 @@
 /**
  * Block Builder implementation
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 import type { BlockBuilder, IfStatementBuilder, SwitchStatementBuilder, ForLoopBuilder, WhileLoopBuilder, DoWhileLoopBuilder } from '../types';
 import { 
   createBlock, 
   createJSDocComment, 
-  createExpressionStatement,
   createReturnStatement,
   parseStatement,
   printNode

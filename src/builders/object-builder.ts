@@ -1,7 +1,7 @@
 /**
  * Object Builder implementation
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 import type { ObjectBuilder, ObjectOptions, ObjectPropertyOptions } from '../types';
 import { 
   createPropertyAssignment,

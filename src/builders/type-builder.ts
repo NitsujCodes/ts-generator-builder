@@ -1,7 +1,7 @@
 /**
  * Type Builder implementation
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 import type { TypeBuilder } from '../types';
 import { 
   createJSDocComment,
@@ -22,10 +22,10 @@ interface TypeParameterDefinition {
  * Implementation of the TypeBuilder interface
  */
 export class TypeBuilderImpl implements TypeBuilder {
-  private name: string;
+  private readonly name: string;
   private typeNode: ts.TypeNode | null = null;
   private comments: string | string[] | undefined;
-  private shouldExport: boolean;
+  private readonly shouldExport: boolean;
   private typeParameters: TypeParameterDefinition[] = [];
 
   /**
@@ -170,7 +170,7 @@ export class TypeBuilderImpl implements TypeBuilder {
    * @param comment The JSDoc comment
    * @returns The builder instance for chaining
    */
-  jsdoc(comment: string | string[]): TypeBuilder {
+  jsdoc(comment: string | string[]): this {
     this.comments = comment;
     return this;
   }

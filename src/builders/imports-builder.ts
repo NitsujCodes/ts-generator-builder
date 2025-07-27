@@ -1,9 +1,10 @@
 /**
  * Imports Builder implementation
  */
-import * as ts from 'typescript';
-import type { ImportsBuilder, ImportOptions } from '../types';
-import { printNode } from '../ast-utils';
+import ts from 'typescript';
+import type {ImportOptions, ImportsBuilder} from '../types';
+import {printNode} from '../ast-utils';
+import {TypeUsageTracker} from '../utils/type-usage-tracker';
 
 /**
  * Named import definition
@@ -18,7 +19,7 @@ interface NamedImportDefinition {
  * Implementation of the ImportsBuilder interface
  */
 export class ImportsBuilderImpl implements ImportsBuilder {
-  private moduleSpecifier: string;
+  private readonly moduleSpecifier: string;
   private namedImports: NamedImportDefinition[] = [];
   private defaultImport: { name: string; used: boolean } | null = null;
   private namespaceImport: { name: string; used: boolean } | null = null;
@@ -147,6 +148,34 @@ export class ImportsBuilderImpl implements ImportsBuilder {
   }
 
   /**
+   * Automatically mark imports as used based on a usage tracker
+   *
+   * @param usageTracker The usage tracker containing used identifiers
+   * @returns The builder instance for chaining
+   */
+  markUsedFromTracker(usageTracker: TypeUsageTracker): ImportsBuilder {
+    console.log(`ImportsBuilder.markUsedFromTracker() called for module: ${this.moduleSpecifier}`);
+    // Mark named imports as used if they appear in the usage tracker
+    this.namedImports.forEach(namedImport => {
+      if (usageTracker.isUsed(namedImport.name)) {
+        namedImport.used = true;
+      }
+    });
+
+    // Mark the default import as used if it appears in the usage tracker
+    if (this.defaultImport && usageTracker.isUsed(this.defaultImport.name)) {
+      this.defaultImport.used = true;
+    }
+
+    // Mark namespace import as used if it appears in the usage tracker
+    if (this.namespaceImport && usageTracker.isUsed(this.namespaceImport.name)) {
+      this.namespaceImport.used = true;
+    }
+
+    return this;
+  }
+
+  /**
    * Generate the TypeScript code for the imports
    * 
    * @returns The generated TypeScript code
@@ -157,7 +186,7 @@ export class ImportsBuilderImpl implements ImportsBuilder {
       ? this.namedImports
       : this.namedImports.filter(imp => imp.used);
     
-    // Check if default import should be included
+    // Check if the default import should be included
     const includeDefault = this.defaultImport && (this.options.includeUnused || this.defaultImport.used);
     
     // Check if namespace import should be included
@@ -190,7 +219,7 @@ export class ImportsBuilderImpl implements ImportsBuilder {
     const importDeclaration = ts.factory.createImportDeclaration(
       undefined,
       ts.factory.createImportClause(
-        this.options.typeOnly,
+        this.options.typeOnly as boolean,
         importClause.name,
         importClause.namedBindings
       ),
@@ -229,13 +258,11 @@ export class ImportsBuilderImpl implements ImportsBuilder {
     } else if (namedImports.length > 0) {
       // Create named imports
       const elements = namedImports.map(imp => {
-        const importSpecifier = ts.factory.createImportSpecifier(
-          false,
-          imp.alias ? ts.factory.createIdentifier(imp.name) : undefined,
-          ts.factory.createIdentifier(imp.alias || imp.name)
+        return ts.factory.createImportSpecifier(
+            false,
+            imp.alias ? ts.factory.createIdentifier(imp.name) : undefined,
+            ts.factory.createIdentifier(imp.alias || imp.name)
         );
-        
-        return importSpecifier;
       });
       
       namedBindings = ts.factory.createNamedImports(elements);
@@ -248,7 +275,7 @@ export class ImportsBuilderImpl implements ImportsBuilder {
     
     // Create the import clause
     return ts.factory.createImportClause(
-      this.options.typeOnly,
+      this.options.typeOnly as boolean,
       name,
       namedBindings
     );

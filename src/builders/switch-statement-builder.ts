@@ -1,7 +1,7 @@
 /**
  * Switch Statement Builder implementation
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 import type { SwitchStatementBuilder, BlockBuilder } from '../types';
 import { StatementBuilderImpl } from './statement-builder';
 import { BlockBuilderImpl } from './block-builder';
@@ -89,7 +89,7 @@ export class SwitchStatementBuilderImpl extends StatementBuilderImpl implements 
    * @param block The block
    * @returns The statements
    */
-  private getStatementsFromBlock(block: BlockBuilderImpl): ts.Statement[] {
+  private getStatementsFromBlock(block: BlockBuilderImpl): ts.NodeArray<ts.Statement> {
     // We need to extract the statements from the block
     // This is a bit of a hack, but it works for now
     const blockNode = block.generateNode();

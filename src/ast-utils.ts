@@ -3,7 +3,7 @@
  * 
  * This module provides functions to create AST nodes using the TypeScript Compiler API
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 
 /**
  * Create a JSDoc comment for a node
@@ -43,8 +43,9 @@ export function createJSDocComment(
   // Create JSDoc tags for metadata
   const tags: ts.JSDocTag[] = metadataLines.map(line => {
     const [tagName, ...tagText] = line.substring(1).split(' ');
+
     return ts.factory.createJSDocUnknownTag(
-      ts.factory.createIdentifier(tagName),
+      ts.factory.createIdentifier(tagName as string),
       tagText.join(' ')
     );
   });
@@ -318,12 +319,10 @@ export function printNodes(
  * Create a source file from nodes
  * 
  * @param nodes The nodes to include in the source file
- * @param fileName The name of the source file
  * @returns Source file node
  */
 export function createSourceFile(
-  nodes: ts.Statement[],
-  fileName: string = 'generated.ts'
+  nodes: ts.Statement[]
 ): ts.SourceFile {
   return ts.factory.createSourceFile(
     nodes,
@@ -634,7 +633,7 @@ export function createSwitchStatement(
  */
 export function createCaseClause(
   expression: string | ts.Expression,
-  statements: ts.Statement[]
+  statements: ts.NodeArray<ts.Statement>
 ): ts.CaseClause {
   // Convert expression string to expression if needed
   const expressionExpr = typeof expression === 'string'
@@ -654,7 +653,7 @@ export function createCaseClause(
  * @returns Default clause node
  */
 export function createDefaultClause(
-  statements: ts.Statement[]
+  statements: ts.NodeArray<ts.Statement>
 ): ts.DefaultClause {
   return ts.factory.createDefaultClause(statements);
 }
@@ -677,7 +676,7 @@ export function createForStatement(
   jsDoc?: ts.JSDoc
 ): ts.ForStatement {
   // Convert initializer string to expression if needed
-  let initializerExpr: ts.Expression | ts.VariableDeclarationList | undefined = undefined;
+  let initializerExpr: ts.Expression | ts.VariableDeclarationList | undefined;
   if (typeof initializer === 'string') {
     initializerExpr = parseExpression(initializer);
   } else {
@@ -685,7 +684,7 @@ export function createForStatement(
   }
 
   // Convert condition string to expression if needed
-  let conditionExpr: ts.Expression | undefined = undefined;
+  let conditionExpr: ts.Expression | undefined;
   if (typeof condition === 'string') {
     conditionExpr = parseExpression(condition);
   } else {
@@ -693,7 +692,7 @@ export function createForStatement(
   }
 
   // Convert incrementor string to expression if needed
-  let incrementorExpr: ts.Expression | undefined = undefined;
+  let incrementorExpr: ts.Expression | undefined;
   if (typeof incrementor === 'string') {
     incrementorExpr = parseExpression(incrementor);
   } else {
@@ -801,7 +800,7 @@ export function createReturnStatement(
   jsDoc?: ts.JSDoc
 ): ts.ReturnStatement {
   // Convert expression string to expression if needed
-  let expressionExpr: ts.Expression | undefined = undefined;
+  let expressionExpr: ts.Expression | undefined;
   if (typeof expression === 'string') {
     expressionExpr = parseExpression(expression);
   } else {
@@ -860,7 +859,7 @@ export function createExpressionStatement(
  */
 export function parseExpression(expression: string): ts.Expression {
   // This is a simplified implementation that just creates an identifier
-  // In a real implementation, we would use the TypeScript parser to parse the expression
+  // In a real implementation; we would use the TypeScript parser to parse the expression
   return ts.factory.createIdentifier(expression);
 }
 
@@ -872,6 +871,6 @@ export function parseExpression(expression: string): ts.Expression {
  */
 export function parseStatement(statement: string): ts.Statement {
   // This is a simplified implementation that just creates an expression statement with an identifier
-  // In a real implementation, we would use the TypeScript parser to parse the statement
+  // In a real implementation; we would use the TypeScript parser to parse the statement
   return ts.factory.createExpressionStatement(ts.factory.createIdentifier(statement));
 }

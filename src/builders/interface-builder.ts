@@ -1,7 +1,7 @@
 /**
  * Interface Builder implementation
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 import type { InterfaceBuilder, PropertyOptions } from '../types';
 import { 
   createInterface, 
@@ -25,11 +25,11 @@ interface PropertyDefinition {
  * Implementation of the InterfaceBuilder interface
  */
 export class InterfaceBuilderImpl implements InterfaceBuilder {
-  private name: string;
+  private readonly name: string;
   private properties: PropertyDefinition[] = [];
   private comments: string | string[] | undefined;
   private extending: string[] = [];
-  private shouldExport: boolean;
+  private readonly shouldExport: boolean;
 
   /**
    * Create a new InterfaceBuilder
