@@ -1,0 +1,19 @@
+{
+  "name": "ts-generator-builder",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "bunx tsx ./src/test.ts",
+    "build": "bunx tsc ",
+    "start": "bunx tsx ./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "change-case": "^5.4.4"
+  }
+}
