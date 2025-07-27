@@ -11,15 +11,15 @@ The library emphasizes organization through sections, comprehensive documentatio
 
 ## Core Features
 
-- **Fluent API**: Chainable methods for building TypeScript constructs without AST complexity
-- **Compiler API Foundation**: Built on TypeScript's official compiler API for guaranteed syntax correctness
+- **Fluent API**: Chainable methods for building TypeScript constructs
 - **Section Organization**: Group related code with customizable sections
 - **JSDoc Support**: Single-line and multi-line JSDoc generation with metadata
-- **Intelligent Imports**: You suggest the imports that are possible, and it will only use the ones that are needed
 - **Metadata Tracking**: Track source, version, generation time, and custom metadata
 - **Flexible Configuration**: Global and per-section configuration options
 - **Type Safety**: Full TypeScript support with proper type definitions
-- **Professional Output**: Consistent formatting and style using TypeScript's built-in printer
+- **TypeScript Compiler API**: Uses the TypeScript Compiler API for robust code generation
+- **Consistent Case Conversion**: Uses the change-case package for reliable case transformations
+- **Conditional Imports**: Smart import statements that only include what's actually used
 
 
 ## Installation
